@@ -1,10 +1,25 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Customer from './components/Customer';
+import Home from './components/Home';
+import Item from './components/Item';
 
 function App() {
 
   return (
-    <div class="container">
-      ASHIF
-    </div>
+    <Router>
+      <div className="app-container">
+        <Navbar />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/customer" element={<Customer />} />
+            <Route path="/item" element={<Item />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   )
 }
 
