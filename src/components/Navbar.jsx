@@ -13,8 +13,8 @@ const Sidebar = () => {
   const menuItems = [
     { icon: Users, label: 'Customers', path: '/customer' },
     { icon: Package, label: 'Item', path: '/item' },
-    { icon: FileText, label: 'Delivery Challans', path: '/dc' },
-    { icon: Receipt, label: 'Invoices', path: '/invoice' },
+    { icon: FileText, label: 'Delivery Challan', path: '/dc' },
+    { icon: Receipt, label: 'Invoice', path: '/invoice' },
   ];
 
   return (

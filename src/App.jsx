@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Customer from './components/Customer';
 import Home from './components/Home';
 import Item from './components/Item';
+import Invoice from './components/Invoice';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/customer" element={<Customer />} />
             <Route path="/item" element={<Item />} />
+            <Route path="/invoice" element={<Invoice />} />
           </Routes>
         </main>
       </div>

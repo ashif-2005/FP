@@ -1,33 +1,46 @@
-import React, { useState } from 'react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import React, { useState } from "react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 
 const Item = () => {
   const [customers, setCustomers] = useState([
-    { id: 1, item: '10x16+2', hsn: '39232100', type: 'PP Single Color Bag', price: '1.50' }
+    {
+      id: 1,
+      item: "10x16+2",
+      hsn: "39232100",
+      type: "PP Single Color Bag",
+      price: "1.50"
+    },
   ]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState(null);
   const [formData, setFormData] = useState({
-    item: '',
-    hsn: '',
-    type: '',
-    price: '',
+    item: "",
+    hsn: "",
+    type: "",
+    price: ""
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAdd = (e) => {
     e.preventDefault();
     const newCustomer = {
       id: customers.length + 1,
-      ...formData
+      ...formData,
     };
-    setCustomers(prev => [...prev, newCustomer]);
-    setFormData({ name: '', address: '', city: '', state: '', gstin: '', statecode: '' });
+    setCustomers((prev) => [...prev, newCustomer]);
+    setFormData({
+      name: "",
+      address: "",
+      city: "",
+      state: "",
+      gstin: "",
+      statecode: "",
+    });
     setIsAddModalOpen(false);
   };
 
@@ -39,17 +52,19 @@ const Item = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    setCustomers(prev =>
-      prev.map(customer =>
-        customer.id === currentCustomer.id ? { ...customer, ...formData } : customer
+    setCustomers((prev) =>
+      prev.map((customer) =>
+        customer.id === currentCustomer.id
+          ? { ...customer, ...formData }
+          : customer
       )
     );
     setIsEditModalOpen(false);
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this customer?')) {
-      setCustomers(prev => prev.filter(customer => customer.id !== id));
+    if (window.confirm("Are you sure you want to delete this customer?")) {
+      setCustomers((prev) => prev.filter((customer) => customer.id !== id));
     }
   };
 
@@ -75,17 +90,23 @@ const Item = () => {
             </tr>
           </thead>
           <tbody>
-            {customers.map(customer => (
+            {customers.map((customer) => (
               <tr key={customer.id}>
                 <td>{customer.item}</td>
                 <td>{customer.hsn}</td>
                 <td>{customer.type}</td>
                 <td>{customer.price}</td>
                 <td className="actions">
-                  <button className="edit-button" onClick={() => handleEdit(customer)}>
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEdit(customer)}
+                  >
                     <Pencil size={16} />
                   </button>
-                  <button className="delete-button" onClick={() => handleDelete(customer.id)}>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDelete(customer.id)}
+                  >
                     <Trash2 size={16} />
                   </button>
                 </td>
@@ -142,8 +163,16 @@ const Item = () => {
                 />
               </div>
               <div className="modal-actions">
-                <button type="submit" className="save-button">Save</button>
-                <button type="button" className="cancel-button" onClick={() => setIsAddModalOpen(false)}>Cancel</button>
+                <button type="submit" className="save-button">
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={() => setIsAddModalOpen(false)}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -156,7 +185,7 @@ const Item = () => {
           <div className="modal-content">
             <h2>Edit Customer</h2>
             <form onSubmit={handleUpdate}>
-            <div className="form-group">
+              <div className="form-group">
                 <label>Item:</label>
                 <input
                   type="text"
@@ -197,8 +226,16 @@ const Item = () => {
                 />
               </div>
               <div className="modal-actions">
-                <button type="submit" className="save-button">Update</button>
-                <button type="button" className="cancel-button" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+                <button type="submit" className="save-button">
+                  Update
+                </button>
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={() => setIsEditModalOpen(false)}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
