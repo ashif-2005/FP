@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Users,
   Package,
@@ -10,6 +10,7 @@ import {
 import logo from '../assets/logoWhite.png';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   const menuItems = [
     { icon: Users, label: 'Customers', path: '/customer' },
     { icon: Package, label: 'Item', path: '/item' },
@@ -17,10 +18,14 @@ const Sidebar = () => {
     { icon: Receipt, label: 'Invoice', path: '/invoice' },
   ];
 
+  const handelLogo = () => {
+    navigate(`/`)
+  }
+
   return (
     <div className="sidebar">
-      <div className="sidebar-header">
-      <img src={logo} alt="Logo" class="logo" />
+      <div className="sidebar-header" onClick={handelLogo}>
+      <img src={logo} alt="Logo"  class="logo" />
       </div>
       <nav className="nav-links">
         {menuItems.map((item) => (

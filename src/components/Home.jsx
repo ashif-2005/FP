@@ -25,15 +25,15 @@ const Home = () => {
         
         <div className="home-features">
           <div className="feature">
-            <h3>🌱 Eco-Friendly Materials</h3>
+            <h3> Eco-Friendly Materials</h3>
             <p>We prioritize sustainability with biodegradable and recyclable packaging solutions.</p>
           </div>
           <div className="feature">
-            <h3>🏭 High-Quality Manufacturing</h3>
+            <h3> High-Quality Manufacturing</h3>
             <p>Using state-of-the-art technology to produce durable and reliable polybags.</p>
           </div>
           <div className="feature">
-            <h3>📦 Custom Packaging</h3>
+            <h3> Custom Packaging</h3>
             <p>Tailor-made polybag solutions to meet your unique business requirements.</p>
           </div>
         </div>

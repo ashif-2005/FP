@@ -5,6 +5,7 @@ import Customer from './components/Customer';
 import Home from './components/Home';
 import Item from './components/Item';
 import Invoice from './components/Invoice';
+import PrintInvoice from './components/PrintInvoice';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
             <Route path="/customer" element={<Customer />} />
             <Route path="/item" element={<Item />} />
             <Route path="/invoice" element={<Invoice />} />
+            <Route path="/print" element={<PrintInvoice />} />
           </Routes>
         </main>
       </div>
