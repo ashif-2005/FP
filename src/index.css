@@ -388,5 +388,3 @@ body {
 .add-item-button:hover {
   background-color: #388e3c;
 }
-
-@import "tailwindcss";

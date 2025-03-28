@@ -95,7 +95,7 @@ const Invoice = () => {
       place: "",
     });
     setIsAddModalOpen(false);
-    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate, invoiceDate: newCustomer.invoiceDate, transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total } });
+    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate.split("-").reverse().join("/"), invoiceDate: newCustomer.invoiceDate.split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total } });
   };
 
   const handleEdit = (customer) => {
@@ -311,7 +311,6 @@ const Invoice = () => {
                     placeholder="HSN Code"
                     value={item.hsnCode}
                     onChange={(e) => handleItemChange(index, e)}
-                    required
                   />
                   <input
                     type="text"
@@ -319,7 +318,6 @@ const Invoice = () => {
                     placeholder="DC Number"
                     value={item.dcNumber}
                     onChange={(e) => handleItemChange(index, e)}
-                    required
                   />
                   <input
                     type="text"
@@ -335,7 +333,6 @@ const Invoice = () => {
                     placeholder="Quantity"
                     value={item.quantity}
                     onChange={(e) => handleItemChange(index, e)}
-                    required
                   />
                   <input
                     type="number"
@@ -343,7 +340,6 @@ const Invoice = () => {
                     placeholder="Price"
                     value={item.price}
                     onChange={(e) => handleItemChange(index, e)}
-                    required
                   />
                   <button
                     type="button"
