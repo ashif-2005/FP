@@ -230,7 +230,7 @@
 
 /* text-lg font-semibold */
 .t-body{
-    font-size: medium;
+    font-size: large;
     font-weight: 400;
 }
 
@@ -240,7 +240,7 @@
     padding: 2px;
     text-align: center;
     vertical-align: middle;
-    /* padding-top: 10px; */
+    padding-top: 10px;
 }
 
 /* flex */
@@ -284,6 +284,7 @@
     flex-direction: column;
     padding: 5px;
     border: 2px solid black;
+    font-size: large;
 }
 
 /* font-bold */
@@ -296,7 +297,7 @@
     width: 23%;
     border: 2px solid black;
     padding: 3px;
-
+    font-size: large;
 }
 
 /* w-full flex justify-between */
@@ -361,6 +362,7 @@
     padding: 5px;
     justify-content: center;
     border: 2px solid black;
+    font-size: large;
 }
 
 /* w-[23%] flex flex-col justify-between border-2 border-black p-2 font-bold */
