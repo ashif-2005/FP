@@ -39,20 +39,20 @@
 /* font-bold text-5xl mb-3 */
 .company-name{
     font-weight: bold;
-    font-size: xx-large;
+    font-size: 50px;
     margin-bottom: 3px;
 }
 
 /* text-lg mt-3 font-semibold */
 .company-address{
-    font-size: large;
+    font-size: 20px;
     font-weight: 400;
     margin-top: 3px;
 }
 
 /* text-lg font-semibold */
 .company-detail{
-    font-size: large;
+    font-size: 20px;
     font-weight: 400;
 }
 
@@ -90,7 +90,7 @@
 .to-company-details{
     display: flex;
     margin-left: 20px;
-    font-size: large;
+    font-size: x-large;
 }
 
 /* flex justify-between mt-3 */
@@ -105,13 +105,13 @@
     display: flex;
     margin-left: 20px;
     font-weight: bold;
-    font-size: large;
+    font-size: x-large;
 }
 
 /* flex text-xl font-bold */
 .code{
     display: flex;
-    font-size: large;
+    font-size: x-large;
     font-weight: bold;
     margin-right: 3px;
 }
@@ -132,7 +132,7 @@
 
 /* text-lg font-bold */
 .tax-text{
-    font-size: large;
+    font-size: x-large;
     font-weight: bold;
 }
 
@@ -147,7 +147,7 @@
 
 /* text-lg font-semibold */
 .condition-text{
-    font-size: large;
+    font-size: x-large;
     font-weight: 400;
 }
 
@@ -169,7 +169,7 @@
 /* font-semibold text-lg */
 .inv-po{
     /* font-weight: 500; */
-    font-size: large;
+    font-size: 20px;
     margin-left: 5px;
 }
 
@@ -200,6 +200,11 @@
     border: 2px solid black;
 }
 
+.trans{
+    font-size: x-large;
+    margin-left: 5px;
+}
+
 /* w-full border-2 border-black */
 .table{
     width: 100%;
@@ -213,6 +218,7 @@
     width: 5%;
     border: 2px solid black;
     padding: 2px;
+    font-size: x-large;
 }
 
 /* w-[60%] border-2 border-black p-2 */
@@ -220,17 +226,19 @@
     width: 60%;
     border: 2px solid black;
     padding: 2px;
+    font-size: x-large;
 }
 
 /* w-[10%] border-2 border-black p-2 */
 .t-head-amount{
     width: 10%;
     border: 2px solid black;
+    font-size: x-large;
 }
 
 /* text-lg font-semibold */
 .t-body{
-    font-size: large;
+    font-size: x-large;
     font-weight: 400;
 }
 
@@ -284,7 +292,7 @@
     flex-direction: column;
     padding: 5px;
     border: 2px solid black;
-    font-size: large;
+    font-size: x-large;
 }
 
 /* font-bold */
@@ -297,7 +305,7 @@
     width: 23%;
     border: 2px solid black;
     padding: 3px;
-    font-size: large;
+    font-size: x-large;
 }
 
 /* w-full flex justify-between */
@@ -323,7 +331,7 @@
 
 /* text-xl font-bold */
 .amt-word{
-    font-size: large;
+    font-size: x-large;
     font-weight: bold;
 }
 
@@ -335,7 +343,7 @@
     align-items: center;
     border: 2px solid black;
     font-weight: bold;
-    font-size: large;
+    font-size: x-large;
     padding: 3px;
 }
 

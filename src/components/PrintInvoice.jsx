@@ -205,10 +205,10 @@ const PrintInvoice = () => {
                 </div>
               </div>
               <div className="transport">
-                <p className="inv-po ">
+                <p className="trans">
                   Transpotation Mode: {data?.transport}
                 </p>
-                <p className="inv-po">
+                <p className="trans">
                   Place Of Supply: {data?.place}
                 </p>
               </div>
@@ -267,7 +267,7 @@ const PrintInvoice = () => {
                     )}
                   </tr>
                 ))}
-                {Array.from({ length: 23 - data?.items.length }, (_, index) => (
+                {Array.from({ length: 16 - data?.items.length }, (_, index) => (
                   <tr key={index}>
                     <td className="t-data">&nbsp;</td>
                     <td className="t-data">&nbsp;</td>
