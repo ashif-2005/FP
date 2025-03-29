@@ -321,7 +321,7 @@ const PrintInvoice = () => {
           </div>
           <div className="word-total">
             <div className="word">
-              <p>AMOUNT IN WORDS</p>
+              <p className="wrd">AMOUNT IN WORDS</p>
               <p className="amt-word">{amountInWords} only</p>
             </div>
             <div className="grnd-tot">

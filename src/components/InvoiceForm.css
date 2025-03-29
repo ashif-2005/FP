@@ -329,6 +329,10 @@
     padding: 3px;
 }
 
+.wrd{
+    font-size: x-large;
+}
+
 /* text-xl font-bold */
 .amt-word{
     font-size: x-large;
