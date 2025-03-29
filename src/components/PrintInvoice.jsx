@@ -325,7 +325,7 @@ const PrintInvoice = () => {
               <p className="amt-word">{amountInWords} only</p>
             </div>
             <div className="grnd-tot">
-              <p>GRAND TOTAL:</p>
+              <p className="grnd-total">GRAND TOTAL:</p>
               <p>{parseFloat(totalAdjusted.roundedTotal).toFixed(2)}</p>
             </div>
           </div>

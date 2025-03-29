@@ -347,6 +347,10 @@
     padding: 3px;
 }
 
+.grnd-total{
+    font-size: large;
+}
+
 /* flex */
 .sign{
     display: flex;
