@@ -267,7 +267,7 @@ const PrintInvoice = () => {
                     )}
                   </tr>
                 ))}
-                {Array.from({ length: 16 - data?.items.length }, (_, index) => (
+                {Array.from({ length: 15 - data?.items.length }, (_, index) => (
                   <tr key={index}>
                     <td className="t-data">&nbsp;</td>
                     <td className="t-data">&nbsp;</td>
