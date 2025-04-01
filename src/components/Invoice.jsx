@@ -26,7 +26,6 @@ const Invoice = () => {
   });
 
   useEffect(()=>{
-    console.log("Hello")
     getInvoice()
   }, [])
 
