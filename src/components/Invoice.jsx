@@ -6,6 +6,7 @@ import axios from "axios";
 const Invoice = () => {
   const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
+  const [data, setData] = useState([])
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState(null);
@@ -27,6 +28,7 @@ const Invoice = () => {
 
   useEffect(()=>{
     getInvoice()
+    getCustomer()
   }, [])
 
   const getInvoice = async () => {
@@ -39,9 +41,35 @@ const Invoice = () => {
     }
   }
 
+  const getCustomer = async () => {
+    try{
+          const response = await axios.get("https://fp-backend-3uya.onrender.com/customer/get");
+          setData(response.data)
+        }
+        catch(err){
+          console.log(err)
+        }
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "toCompany") {
+      console.log(data)
+      const companyDetails = data.find((company) => company.name === value);
+      console.log(value)
+      console.log(companyDetails)
+      if (companyDetails) {
+        setFormData((prev) => ({
+          ...prev,
+          address: companyDetails.address,
+          city: companyDetails.city,
+          state: companyDetails.state,
+          gstNumber: companyDetails.gstin,
+          stateCode: companyDetails.statecode,
+        }));
+      }
+    }
   };
 
   const handleItemChange = (index, e) => {
@@ -143,6 +171,10 @@ const Invoice = () => {
     }
   };
 
+  const handleClick = (newCustomer) => {
+    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate.split("-").reverse().join("/"), invoiceDate: newCustomer.invoiceDate.split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: newCustomer.items.reduce((sum, item) => sum + item.quantity * item.price, 0).toFixed(2) } });
+  }
+
   return (
     <div className="page-container">
       <div className="page-header">
@@ -167,10 +199,10 @@ const Invoice = () => {
           <tbody>
             {customers.map((customer) => (
               <tr key={customer.id}>
-                <td>{customer.invoiceNumber}</td>
-                <td>{customer.invoiceDate.split("-").reverse().join("/")}</td>
-                <td>{customer.toCompany}</td>
-                <td>
+                <td onClick={() => handleClick(customer)}>{customer.invoiceNumber}</td>
+                <td onClick={() => handleClick(customer)}>{customer.invoiceDate.substring(0, 10).split("-").reverse().join("/")}</td>
+                <td onClick={() => handleClick(customer)}>{customer.toCompany}</td>
+                <td onClick={() => handleClick(customer)}>
                   ₹
                   {customer.items
                     .reduce((sum, item) => sum + item.quantity * item.price, 0)
@@ -187,7 +219,6 @@ const Invoice = () => {
                   <button
                     className="delete-button"
                     onClick={() => {
-                      console.log(customer._id)
                       handleDelete(customer._id)
                     }}
                   >
@@ -550,7 +581,6 @@ const Invoice = () => {
                     placeholder="HSN Code"
                     value={item.hsnCode}
                     onChange={(e) => handleItemChange(index, e)}
-                    required
                   />
                   <input
                     type="text"
@@ -558,7 +588,6 @@ const Invoice = () => {
                     placeholder="DC Number"
                     value={item.dcNumber}
                     onChange={(e) => handleItemChange(index, e)}
-                    required
                   />
                   <input
                     type="text"
@@ -574,7 +603,6 @@ const Invoice = () => {
                     placeholder="Quantity"
                     value={item.quantity}
                     onChange={(e) => handleItemChange(index, e)}
-                    required
                   />
                   <input
                     type="number"
@@ -582,8 +610,7 @@ const Invoice = () => {
                     placeholder="Price"
                     value={item.price}
                     onChange={(e) => handleItemChange(index, e)}
-                    required
-                  />
+                  />  
                   <button
                     type="button"
                     className="delete-button"
