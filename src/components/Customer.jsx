@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
+import axios from 'axios';
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
@@ -15,18 +16,35 @@ const Customers = () => {
     statecode: ''
   });
 
+  useEffect(()=>{
+    getCustomer()
+  }, [])
+
+  const getCustomer = async () => {
+    try{
+          const response = await axios.get("https://fp-backend-3uya.onrender.com/customer/get");
+          setCustomers(response.data)
+        }
+        catch(err){
+          console.log(err)
+        }
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
     const newCustomer = {
       id: customers.length + 1,
       ...formData
     };
     setCustomers(prev => [...prev, newCustomer]);
+    const response = await axios.post("https://fp-backend-3uya.onrender.com/customer/add", formData, {
+      headers: { "Content-Type": "application/json" },
+    });
     setFormData({ name: '', address: '', city: '', state: '', gstin: '', statecode: '' });
     setIsAddModalOpen(false);
   };
@@ -37,20 +55,24 @@ const Customers = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     setCustomers(prev =>
       prev.map(customer =>
-        customer.id === currentCustomer.id ? { ...customer, ...formData } : customer
+        customer._id === currentCustomer._id ? { ...customer, ...formData } : customer
       )
     );
+    const response = await axios.put(`https://fp-backend-3uya.onrender.com/customer/edit/${currentCustomer._id}`, formData, {
+      headers: { "Content-Type": "application/json" },
+    });
     setFormData({ name: '', address: '', city: '', state: '', gstin: '', statecode: '' });
     setIsEditModalOpen(false);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this customer?')) {
-      setCustomers(prev => prev.filter(customer => customer.id !== id));
+      setCustomers(prev => prev.filter(customer => customer._id !== id));
+      const response = await axios.delete(`https://fp-backend-3uya.onrender.com/invoice/delete/${id}`);
     }
   };
 
@@ -90,7 +112,7 @@ const Customers = () => {
                   <button className="edit-button" onClick={() => handleEdit(customer)}>
                     <Pencil size={16} />
                   </button>
-                  <button className="delete-button" onClick={() => handleDelete(customer.id)}>
+                  <button className="delete-button" onClick={() => handleDelete(customer._id)}>
                     <Trash2 size={16} />
                   </button>
                 </td>

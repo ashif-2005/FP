@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import axios from "axios";
 
 const DeliveryChalan = () => {
     const [customers, setCustomers] = useState([]);
@@ -13,6 +14,20 @@ const DeliveryChalan = () => {
       ponum: "",
       items: []
     });
+
+    useEffect(()=>{
+        getDC()
+    }, [])
+
+    const getDC = async () => {
+        try{
+            const response = await axios.get("https://fp-backend-3uya.onrender.com/dc/get");
+            setCustomers(response.data)
+          }
+          catch(err){
+            console.log(err)
+          }
+    }
   
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -41,13 +56,16 @@ const DeliveryChalan = () => {
       setFormData({ ...formData, items: updatedItems });
     };
   
-    const handleAdd = (e) => {
+    const handleAdd = async (e) => {
       e.preventDefault();
       const newCustomer = {
         id: customers.length + 1,
         ...formData,
       };
       setCustomers((prev) => [...prev, newCustomer]);
+      const response = await axios.post("https://fp-backend-3uya.onrender.com/dc/add", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
       setFormData({
         DCNum: "",
         DCDate: new Date().toISOString().split("T")[0],
@@ -64,15 +82,18 @@ const DeliveryChalan = () => {
       setIsEditModalOpen(true);
     };
   
-    const handleUpdate = (e) => {
+    const handleUpdate = async(e) => {
       e.preventDefault();
       setCustomers((prev) =>
         prev.map((customer) =>
-          customer.id === currentCustomer.id
+          customer._id === currentCustomer._id
             ? { ...customer, ...formData }
             : customer
         )
       );
+      const response = await axios.put(`https://fp-backend-3uya.onrender.com/dc/edit/${currentCustomer._id}`, formData, {
+        headers: { "Content-Type": "application/json" },
+      });
       setFormData({
         DCNum: "",
         DCDate: new Date().toISOString().split("T")[0],
@@ -83,9 +104,10 @@ const DeliveryChalan = () => {
       setIsEditModalOpen(false);
     };
   
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
       if (window.confirm("Are you sure you want to delete this DC?")) {
         setCustomers((prev) => prev.filter((customer) => customer.id !== id));
+        const response = await axios.delete(`https://fp-backend-3uya.onrender.com/invoice/delete/${id}`);
       }
     };
   
@@ -131,7 +153,7 @@ const DeliveryChalan = () => {
                     </button>
                     <button
                       className="delete-button"
-                      onClick={() => handleDelete(customer.id)}
+                      onClick={() => handleDelete(customer._id)}
                     >
                       <Trash2 size={16} />
                     </button>
