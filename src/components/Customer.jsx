@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 
 const Customers = () => {
-  const [customers, setCustomers] = useState([
-    { id: 1, name: 'PELO', address: 'Kumar Nagar', city: 'Tiruppur', state: 'Tamil Nadu', gstin: '123456789', statecode: '33' }
-  ]);
+  const [customers, setCustomers] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState(null);
@@ -46,6 +44,7 @@ const Customers = () => {
         customer.id === currentCustomer.id ? { ...customer, ...formData } : customer
       )
     );
+    setFormData({ name: '', address: '', city: '', state: '', gstin: '', statecode: '' });
     setIsEditModalOpen(false);
   };
 
@@ -166,7 +165,10 @@ const Customers = () => {
               </div>
               <div className="modal-actions">
                 <button type="submit" className="save-button">Save</button>
-                <button type="button" className="cancel-button" onClick={() => setIsAddModalOpen(false)}>Cancel</button>
+                <button type="button" className="cancel-button" onClick={() => {
+                  setIsAddModalOpen(false)
+                  setFormData({ name: '', address: '', city: '', state: '', gstin: '', statecode: '' });
+                }}>Cancel</button>
               </div>
             </form>
           </div>
@@ -238,7 +240,10 @@ const Customers = () => {
               </div>
               <div className="modal-actions">
                 <button type="submit" className="save-button">Update</button>
-                <button type="button" className="cancel-button" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+                <button type="button" className="cancel-button" onClick={() => {
+                  setIsEditModalOpen(false)
+                  setFormData({ name: '', address: '', city: '', state: '', gstin: '', statecode: '' });
+                }}>Cancel</button>
               </div>
             </form>
           </div>

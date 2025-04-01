@@ -8,7 +8,7 @@ const Item = () => {
       item: "10x16+2",
       hsn: "39232100",
       type: "PP Single Color Bag",
-      price: "1.50"
+      price: 1.50
     },
   ]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -18,7 +18,7 @@ const Item = () => {
     item: "",
     hsn: "",
     type: "",
-    price: ""
+    price: 0
   });
 
   const handleInputChange = (e) => {
@@ -34,12 +34,10 @@ const Item = () => {
     };
     setCustomers((prev) => [...prev, newCustomer]);
     setFormData({
-      name: "",
-      address: "",
-      city: "",
-      state: "",
-      gstin: "",
-      statecode: "",
+      item: "",
+      hsn: "",
+      type: "",
+      price: 0
     });
     setIsAddModalOpen(false);
   };
@@ -59,6 +57,12 @@ const Item = () => {
           : customer
       )
     );
+    setFormData({
+      item: "",
+      hsn: "",
+      type: "",
+      price: 0
+    });
     setIsEditModalOpen(false);
   };
 
@@ -71,10 +75,10 @@ const Item = () => {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h1 className="page-title">Customers</h1>
+        <h1 className="page-title">Items</h1>
         <button className="add-button" onClick={() => setIsAddModalOpen(true)}>
           <Plus size={20} />
-          Add Customer
+          Add Item
         </button>
       </div>
 
@@ -169,7 +173,15 @@ const Item = () => {
                 <button
                   type="button"
                   className="cancel-button"
-                  onClick={() => setIsAddModalOpen(false)}
+                  onClick={() => {
+                    setIsAddModalOpen(false)
+                    setFormData({
+                      item: "",
+                      hsn: "",
+                      type: "",
+                      price: 0
+                    });
+                  }}
                 >
                   Cancel
                 </button>
@@ -232,7 +244,15 @@ const Item = () => {
                 <button
                   type="button"
                   className="cancel-button"
-                  onClick={() => setIsEditModalOpen(false)}
+                  onClick={() => {
+                    setIsEditModalOpen(false)
+                    setFormData({
+                      item: "",
+                      hsn: "",
+                      type: "",
+                      price: 0
+                    });
+                  }}
                 >
                   Cancel
                 </button>

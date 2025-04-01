@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Item from './components/Item';
 import Invoice from './components/Invoice';
 import PrintInvoice from './components/PrintInvoice';
+import DeliveryChalan from './components/DeliveryChalan';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/item" element={<Item />} />
             <Route path="/invoice" element={<Invoice />} />
             <Route path="/print" element={<PrintInvoice />} />
+            <Route path="/dc" element={<DeliveryChalan />} />
           </Routes>
         </main>
       </div>

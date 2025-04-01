@@ -1,27 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Invoice = () => {
   const navigate = useNavigate();
-  const [customers, setCustomers] = useState([
-    {
-      id: Date.now(),
-      invoiceNumber: "1",
-      invoiceDate: new Date().toISOString().split("T")[0],
-      poNumber: "1",
-      poDate: new Date().toISOString().split("T")[0],
-      toCompany: "PELO",
-      address: "Kumar Nagar",
-      city: "Tiruppur",
-      state: "Tamil Nadu",
-      gstNumber: "123456789",
-      stateCode: "33",
-      transport: "Auto",
-      place: "Tiruppur",
-      items: [],
-    },
-  ]);
+  const [customers, setCustomers] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState(null);
@@ -38,8 +22,23 @@ const Invoice = () => {
     stateCode: "",
     transport: "",
     place: "",
-    items: [],
+    items: []
   });
+
+  useEffect(()=>{
+    console.log("Hello")
+    getInvoice()
+  }, [])
+
+  const getInvoice = async () => {
+    try{
+      const response = await axios.get("https://fp-backend-3uya.onrender.com/invoice/get");
+      setCustomers(response.data)
+    }
+    catch(err){
+      console.log(err)
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -68,7 +67,7 @@ const Invoice = () => {
     setFormData({ ...formData, items: updatedItems });
   };
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
     const newCustomer = {
       id: customers.length + 1,
@@ -80,6 +79,9 @@ const Invoice = () => {
         sum + (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
       0
     );
+    const response = await axios.post("https://fp-backend-3uya.onrender.com/invoice/add", formData, {
+      headers: { "Content-Type": "application/json" },
+    });
     setFormData({
       invoiceNumber: "",
       invoiceDate: new Date().toISOString().split("T")[0],
@@ -93,6 +95,7 @@ const Invoice = () => {
       stateCode: "",
       transport: "",
       place: "",
+      items: []
     });
     setIsAddModalOpen(false);
     navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate.split("-").reverse().join("/"), invoiceDate: newCustomer.invoiceDate.split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total } });
@@ -104,31 +107,50 @@ const Invoice = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     setCustomers((prev) =>
       prev.map((customer) =>
-        customer.id === currentCustomer.id
+        customer._id === currentCustomer._id
           ? { ...customer, ...formData }
           : customer
       )
     );
+    const response = await axios.put(`https://fp-backend-3uya.onrender.com/invoice/edit/${currentCustomer._id}`, formData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    setFormData({
+      invoiceNumber: "",
+      invoiceDate: new Date().toISOString().split("T")[0],
+      poNumber: "",
+      poDate: new Date().toISOString().split("T")[0],
+      toCompany: "",
+      address: "",
+      city: "",
+      state: "",
+      gstNumber: "",
+      stateCode: "",
+      transport: "",
+      place: "",
+      items: []
+    });
     setIsEditModalOpen(false);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
-      setCustomers((prev) => prev.filter((customer) => customer.id !== id));
+      setCustomers((prev) => prev.filter((customer) => customer._id !== id));
+      const response = await axios.delete(`https://fp-backend-3uya.onrender.com/invoice/delete/${id}`);
     }
   };
 
   return (
     <div className="page-container">
       <div className="page-header">
-        <h1 className="page-title">Customers</h1>
+        <h1 className="page-title">Invoice</h1>
         <button className="add-button" onClick={() => setIsAddModalOpen(true)}>
           <Plus size={20} />
-          Add Customer
+          Add Invoice
         </button>
       </div>
 
@@ -147,7 +169,7 @@ const Invoice = () => {
             {customers.map((customer) => (
               <tr key={customer.id}>
                 <td>{customer.invoiceNumber}</td>
-                <td>{customer.invoiceDate}</td>
+                <td>{customer.invoiceDate.split("-").reverse().join("/")}</td>
                 <td>{customer.toCompany}</td>
                 <td>
                   ₹
@@ -165,7 +187,10 @@ const Invoice = () => {
                   </button>
                   <button
                     className="delete-button"
-                    onClick={() => handleDelete(customer.id)}
+                    onClick={() => {
+                      console.log(customer._id)
+                      handleDelete(customer._id)
+                    }}
                   >
                     <Trash2 size={16} />
                   </button>
@@ -289,7 +314,7 @@ const Invoice = () => {
                   name="transport"
                   value={formData.transport}
                   onChange={handleInputChange}
-                  required
+                  
                 />
               </div>
               <div className="form-group">
@@ -299,7 +324,7 @@ const Invoice = () => {
                   name="place"
                   value={formData.place}
                   onChange={handleInputChange}
-                  required
+                  
                 />
               </div>
               <h3>Items</h3>
@@ -364,7 +389,24 @@ const Invoice = () => {
                 <button
                   type="button"
                   className="cancel-button"
-                  onClick={() => setIsAddModalOpen(false)}
+                  onClick={() => {
+                    setIsAddModalOpen(false)
+                    setFormData({
+                      invoiceNumber: "",
+                      invoiceDate: new Date().toISOString().split("T")[0],
+                      poNumber: "",
+                      poDate: new Date().toISOString().split("T")[0],
+                      toCompany: "",
+                      address: "",
+                      city: "",
+                      state: "",
+                      gstNumber: "",
+                      stateCode: "",
+                      transport: "",
+                      place: "",
+                      items: []
+                    });
+                  }}
                 >
                   Cancel
                 </button>
@@ -487,7 +529,7 @@ const Invoice = () => {
                   name="transport"
                   value={formData.transport}
                   onChange={handleInputChange}
-                  required
+                  
                 />
               </div>
               <div className="form-group">
@@ -497,7 +539,7 @@ const Invoice = () => {
                   name="place"
                   value={formData.place}
                   onChange={handleInputChange}
-                  required
+                  
                 />
               </div>
               <h3>Items</h3>
@@ -566,7 +608,24 @@ const Invoice = () => {
                 <button
                   type="button"
                   className="cancel-button"
-                  onClick={() => setIsEditModalOpen(false)}
+                  onClick={() => {
+                    setIsEditModalOpen(false)
+                    setFormData({
+                      invoiceNumber: "",
+                      invoiceDate: new Date().toISOString().split("T")[0],
+                      poNumber: "",
+                      poDate: new Date().toISOString().split("T")[0],
+                      toCompany: "",
+                      address: "",
+                      city: "",
+                      state: "",
+                      gstNumber: "",
+                      stateCode: "",
+                      transport: "",
+                      place: "",
+                      items: []
+                    });
+                  }}
                 >
                   Cancel
                 </button>
