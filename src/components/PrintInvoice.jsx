@@ -34,8 +34,17 @@ const PrintInvoice = () => {
     doc.save("template.pdf");
   };
 
-  const sgst = data?.totalAmount * 0.09;
-  const cgst = data?.totalAmount * 0.09;
+  let sgst = 0
+  let cgst = 0
+  let igst = 0
+
+  if(data?.stateCode != "33"){
+    igst = data?.totalAmount * 0.18;
+  }
+  else{
+    sgst = data?.totalAmount * 0.09;
+    cgst = data?.totalAmount * 0.09;
+  }
 
   function numberToWords(num) {
     const belowTwenty = [
@@ -130,7 +139,7 @@ const PrintInvoice = () => {
     totalQuantity += parseInt(item.quantity);
   });
 
-  const totalAdjusted = adjustToNearestWhole(data?.totalAmount + sgst + cgst);
+  const totalAdjusted = adjustToNearestWhole(data?.totalAmount + sgst + cgst + igst);
   const amountInWords = numberToWords(totalAdjusted.roundedTotal);
 
   return (
@@ -169,7 +178,7 @@ const PrintInvoice = () => {
                 <p className="gst">
                   GSTIN: {data?.gstno}
                 </p>
-                <p className="code">STATE CODE: 33</p>
+                <p className="code">STATE CODE: {data?.stateCode}</p>
               </div>
             </div>
             <div className="invoice-detail">
@@ -310,8 +319,8 @@ const PrintInvoice = () => {
                 <p>{parseFloat(cgst).toFixed(2)}</p>
               </div>
               <div className="calculation">
-                <p>IGST @9%:</p>
-                <p>0.00</p>
+                <p>IGST @18%:</p>
+                <p>{parseFloat(igst).toFixed(2)}</p>
               </div>
               <div className="calculation">
                 <p>Round Off:</p>
