@@ -72,7 +72,7 @@ const Customers = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this customer?')) {
       setCustomers(prev => prev.filter(customer => customer._id !== id));
-      const response = await axios.delete(`https://fp-backend-3uya.onrender.com/invoice/delete/${id}`);
+      const response = await axios.delete(`https://fp-backend-3uya.onrender.com/customer/delete/${id}`);
     }
   };
 

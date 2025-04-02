@@ -107,7 +107,7 @@ const DeliveryChalan = () => {
     const handleDelete = async (id) => {
       if (window.confirm("Are you sure you want to delete this DC?")) {
         setCustomers((prev) => prev.filter((customer) => customer.id !== id));
-        const response = await axios.delete(`https://fp-backend-3uya.onrender.com/invoice/delete/${id}`);
+        const response = await axios.delete(`https://fp-backend-3uya.onrender.com/dc/delete/${id}`);
       }
     };
   
