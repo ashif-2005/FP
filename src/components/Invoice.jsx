@@ -84,7 +84,7 @@ const Invoice = () => {
       ...formData,
       items: [
         ...formData.items,
-        { hsnCode: "", dcNumber: "", itemName: "", quantity: "", price: "" },
+        { hsnCode: "", dcNumber: "", itemName: "", quantity: 0, price: 0 },
       ],
     });
   };
@@ -172,7 +172,12 @@ const Invoice = () => {
   };
 
   const handleClick = (newCustomer) => {
-    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate.substring(0, 10).split("-").reverse().join("/"), invoiceDate: newCustomer.invoiceDate.substring(0, 10).split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: newCustomer.items.reduce((sum, item) => sum + item.quantity * item.price, 0).toFixed(2) } });
+    const total = newCustomer.items.reduce(
+      (sum, item) =>
+        sum + (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+      0
+    );
+    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate.substring(0, 10).split("-").reverse().join("/"), invoiceDate: newCustomer.invoiceDate.substring(0, 10).split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total} });
   }
 
   return (

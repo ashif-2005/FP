@@ -124,8 +124,10 @@ const PrintInvoice = () => {
   }
 
   function adjustToNearestWhole(amount) {
+    console.log(amount)
     const rounded = Math.round(amount);
     const difference = (rounded - amount).toFixed(2);
+    console.log({rounded, difference})
 
     return {
       roundedTotal: rounded,
@@ -134,12 +136,17 @@ const PrintInvoice = () => {
   }
 
   let totalQuantity = 0;
+  let amt = 0;
 
   data?.items.forEach((item) => {
     totalQuantity += parseInt(item.quantity);
+    amt += parseInt(item.price)*parseInt(item.quantity);
   });
+  console.log(amt)
 
   const totalAdjusted = adjustToNearestWhole(data?.totalAmount + sgst + cgst + igst);
+  console.log(totalAdjusted)
+  console.log(data?.totalAmount + sgst + cgst + igst)
   const amountInWords = numberToWords(totalAdjusted.roundedTotal);
 
   return (
