@@ -495,7 +495,6 @@ const Invoice = () => {
                   name="poNumber"
                   value={formData.poNumber}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
               <div className="form-group">
@@ -505,7 +504,6 @@ const Invoice = () => {
                   name="poDate"
                   value={formData.poDate}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
               <div className="form-group">
