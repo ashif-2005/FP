@@ -139,8 +139,7 @@ const PrintInvoice = () => {
   let amt = 0;
 
   data?.items.forEach((item) => {
-    totalQuantity += parseInt(item.quantity);
-    amt += parseInt(item.price)*parseInt(item.quantity);
+    totalQuantity += parseFloat(item.quantity);
   });
   console.log(amt)
 
@@ -167,7 +166,7 @@ const PrintInvoice = () => {
                 Email: friendspacks74@gmail.com, PHONE: 0421 4333524, MOBILE:
                 9443373524
               </p>
-              <p className="compny-detail">
+              <p className="compny-gst">
                 GSTIN: 33AGGPR1091N1Z3, STATE: TAMIL NADU, STATE CODE: 33
               </p>
             </div>
@@ -275,7 +274,7 @@ const PrintInvoice = () => {
                     {item.price * item.quantity ? (
                       <td className="t-data">
                         {(
-                          parseFloat(item.price) * parseInt(item.quantity)
+                          parseFloat(item.price) * parseFloat(item.quantity)
                         ).toFixed(2)}
                       </td>
                     ) : (
@@ -303,7 +302,8 @@ const PrintInvoice = () => {
               <p>TOTAL</p>
             </div>
             <div className="quan-amt">
-              <p>{totalQuantity}</p>
+              {/* <p>{parseFloat(totalQuantity).toFixed(3)}</p> */}
+              <p></p>
               <p>{parseFloat(data?.totalAmount).toFixed(2)}</p>
             </div>
           </div>

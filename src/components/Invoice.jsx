@@ -14,7 +14,7 @@ const Invoice = () => {
     invoiceNumber: "",
     invoiceDate: new Date().toISOString().split("T")[0],
     poNumber: "",
-    poDate: new Date().toISOString().split("T")[0],
+    poDate: "",
     toCompany: "",
     address: "",
     city: "",
@@ -54,6 +54,14 @@ const Invoice = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "poNumber"){
+      if(value != ""){
+        setFormData((prev) => ({
+          ...prev,
+          poDate: new Date().toISOString().split("T")[0],
+        }));
+      }
+    }
     if (name === "toCompany") {
       console.log(data)
       const companyDetails = data.find((company) => company.name === value);
@@ -131,6 +139,11 @@ const Invoice = () => {
   const handleEdit = (customer) => {
     setCurrentCustomer(customer);
     setFormData(customer);
+    setFormData((prev) => ({ ...prev,
+      invoiceDate: customer.invoiceDate.split("T")[0],
+      poDate: customer.poDate.split("T")[0]
+    }));
+    // console.log(customer.invoiceDate.split("T")[0])
     setIsEditModalOpen(true);
   };
 
@@ -269,7 +282,6 @@ const Invoice = () => {
                   name="poNumber"
                   value={formData.poNumber}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
               <div className="form-group">
@@ -279,7 +291,6 @@ const Invoice = () => {
                   name="poDate"
                   value={formData.poDate}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
               <div className="form-group">

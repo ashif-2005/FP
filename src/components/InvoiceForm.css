@@ -46,14 +46,19 @@
 /* text-lg mt-3 font-semibold */
 .company-address{
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 500;
     margin-top: 3px;
 }
 
 /* text-lg font-semibold */
 .company-detail{
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 500;
+}
+
+.compny-gst{
+    font-size: 25px;
+    font-weight: bolder;
 }
 
 /* flex */
