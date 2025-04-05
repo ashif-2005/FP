@@ -111,7 +111,7 @@ const Invoice = () => {
     setCustomers((prev) => [...prev, newCustomer]);
     const total = newCustomer.items.reduce(
       (sum, item) =>
-        sum + (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+        sum + (parseFloat(item.price) || 0) * (parseFloat(item.quantity) || 0),
       0
     );
     const response = await axios.post("https://fp-backend-3uya.onrender.com/invoice/add", formData, {
@@ -186,8 +186,8 @@ const Invoice = () => {
 
   const handleClick = (newCustomer) => {
     const total = newCustomer.items.reduce(
-      (sum, item) =>
-        sum + (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
+      (sum, item) => 
+        sum + ((parseFloat(item.quantity) || 0) * parseFloat(item.price) || 0),
       0
     );
     navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate.substring(0, 10).split("-").reverse().join("/"), invoiceDate: newCustomer.invoiceDate.substring(0, 10).split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total} });
@@ -223,7 +223,7 @@ const Invoice = () => {
                 <td onClick={() => handleClick(customer)}>
                   ₹
                   {customer.items
-                    .reduce((sum, item) => sum + item.quantity * item.price, 0)
+                    .reduce((sum, item) => sum + ((parseFloat(item.quantity) || 0) * parseFloat(item.price) || 0), 0)
                     .toFixed(2)}
                 </td>
                 {/* <td>1000.00</td> */}
