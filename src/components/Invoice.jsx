@@ -133,7 +133,7 @@ const Invoice = () => {
       items: []
     });
     setIsAddModalOpen(false);
-    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate.split("-").reverse().join("/"), invoiceDate: newCustomer.invoiceDate.split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total } });
+    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate ? newCustomer.poDate.substring(0, 10).split("-").reverse().join("/") : "", invoiceDate: newCustomer.invoiceDate.split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total } });
   };
 
   const handleEdit = (customer) => {
@@ -141,7 +141,7 @@ const Invoice = () => {
     setFormData(customer);
     setFormData((prev) => ({ ...prev,
       invoiceDate: customer.invoiceDate.split("T")[0],
-      poDate: customer.poDate.split("T")[0]
+      poDate: customer.poDate ? customer.poDate.split("T")[0] : ""
     }));
     // console.log(customer.invoiceDate.split("T")[0])
     setIsEditModalOpen(true);
@@ -190,7 +190,18 @@ const Invoice = () => {
         sum + ((parseFloat(item.quantity) || 0) * parseFloat(item.price) || 0),
       0
     );
-    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate.substring(0, 10).split("-").reverse().join("/"), invoiceDate: newCustomer.invoiceDate.substring(0, 10).split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total} });
+    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate ? newCustomer.poDate.substring(0, 10).split("-").reverse().join("/") : "", invoiceDate: newCustomer.invoiceDate.substring(0, 10).split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total} });
+  }
+
+  const getTaxAndTotal = (customer) => {
+    const total = customer.items
+      .reduce((sum, item) => sum + ((parseFloat(item.quantity) || 0) * parseFloat(item.price) || 0), 0)
+      .toFixed(2)
+    const tax = parseFloat(total * 0.18).toFixed(2)
+    return {
+      total : parseFloat(parseFloat(total) + parseFloat(tax)).toFixed(2),
+      tax
+    }
   }
 
   return (
@@ -211,6 +222,8 @@ const Invoice = () => {
               <th>Invoice Date</th>
               <th>To Company</th>
               <th>Amount</th>
+              <th>Tax</th>
+              <th>Total</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -226,6 +239,8 @@ const Invoice = () => {
                     .reduce((sum, item) => sum + ((parseFloat(item.quantity) || 0) * parseFloat(item.price) || 0), 0)
                     .toFixed(2)}
                 </td>
+                <td>{getTaxAndTotal(customer).tax}</td>
+                <td>{getTaxAndTotal(customer).total}</td>
                 {/* <td>1000.00</td> */}
                 <td className="actions">
                   <button
