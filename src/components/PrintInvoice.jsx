@@ -143,10 +143,18 @@ const PrintInvoice = () => {
   });
   console.log(amt)
 
-  const totalAdjusted = adjustToNearestWhole(data?.totalAmount + sgst + cgst + igst);
+  const totalAdjusted = adjustToNearestWhole(data?.totalAmount + sgst + cgst + igst + parseInt(data?.transCharge));
   console.log(totalAdjusted)
   console.log(data?.totalAmount + sgst + cgst + igst)
   const amountInWords = numberToWords(totalAdjusted.roundedTotal);
+
+  const checkQuantity = (value) => {
+    if (value % 1 !== 0) {
+      return true
+  } else {
+      return false
+  }
+  }
 
   return (
     <div className="page-container">
@@ -157,6 +165,10 @@ const PrintInvoice = () => {
               <img src={logo} alt="LOGO" className="inv-logo" />
             </div>
             <div className="company">
+              <div className="original-copy">
+                <label className="original"><input type="checkbox"/> Original</label>
+                <label className="copy"><input type="checkbox" /> Copy</label>
+              </div>
               <h1 className="company-name">FRIENDS PACKS</h1>
               <p className="company-address">
                 6-A Jeeva Colony(Extn.), A V P LAYOUT 3rd STREET, GANDHINAGAR
@@ -282,7 +294,7 @@ const PrintInvoice = () => {
                     )}
                   </tr>
                 ))}
-                {Array.from({ length: 15 - data?.items.length }, (_, index) => (
+                {Array.from({ length: 14 - data?.items.length }, (_, index) => (
                   <tr key={index}>
                     <td className="t-data">&nbsp;</td>
                     <td className="t-data">&nbsp;</td>
@@ -314,7 +326,10 @@ const PrintInvoice = () => {
               </p>
               <p>Account No: 50200014924572,</p>
               <p>IFSC Code: HDFC0002408,</p>
-              <p>Branch: INDIRA NAGAR BRANCH, TIRUPPUR.</p>
+              <div className="transport-charge">
+                <p>Branch: INDIRA NAGAR BRANCH, TIRUPPUR.</p>
+                <p>Transport Charge: </p>
+              </div>
             </div>
             <div className="amt-detail">
               <div className="calculation">
@@ -330,6 +345,10 @@ const PrintInvoice = () => {
                 <p>{parseFloat(igst).toFixed(2)}</p>
               </div>
               <div className="calculation">
+                <p></p>
+                <p>{parseFloat(data?.transCharge).toFixed(2)}</p>
+              </div>
+              <div className="calculation">
                 <p>Round Off:</p>
                 <p>{totalAdjusted.adjustment}</p>
               </div>
@@ -337,7 +356,7 @@ const PrintInvoice = () => {
           </div>
           <div className="word-total">
             <div className="word">
-              <p className="wrd">AMOUNT IN WORDS</p>
+              <p className="wrd">AMOUNT IN WORDS : </p>
               <p className="amt-word">{amountInWords} only</p>
             </div>
             <div className="grnd-tot">
@@ -350,14 +369,14 @@ const PrintInvoice = () => {
               <p className="space">Receiver Signature</p>
             </div>
             <div className="terms">
-              <p>Terms & Condition:</p>
+              <u><p>Terms & Condition:</p></u>
               <p>* Goods once sold cannot be taken back</p>
               <p>
                 * The payment should be made only way of crossed Draft/ Cheque
                 in favour of FRIENDS PACKS.
               </p>
               <p className="mb-10">
-                * All disputes subject to tirupur jurisdiction only.
+                * All disputes subject to Tirupur Jurisdiction only.
               </p>
             </div>
             <div className="fp">

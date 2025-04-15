@@ -28,12 +28,30 @@
 
 /* flex flex-col justify-center w-full border-2 border-black */
 .company{
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
     border: 2px solid black;
+}
+
+.original-copy{
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}
+
+.original{
+    font-size: large;
+    font-weight: bold;
+}
+
+.copy{
+    margin-left: 15px;
+    font-size: large;
+    font-weight: bold;
 }
 
 /* font-bold text-5xl mb-3 */
@@ -305,6 +323,11 @@
     font-weight: bold;
 }
 
+.transport-charge{
+    display: flex;
+    justify-content: space-between;
+}
+
 /* w-[23%] border-2 border-black font-semibold p-2 text-lg */
 .amt-detail{
     width: 23%;
@@ -335,7 +358,7 @@
 }
 
 .wrd{
-    font-size: x-large;
+    font-size: large;
 }
 
 /* text-xl font-bold */

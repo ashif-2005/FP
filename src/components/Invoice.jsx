@@ -23,6 +23,7 @@ const Invoice = () => {
     stateCode: "",
     transport: "",
     place: "",
+    transportCharge: "",
     items: []
   });
 
@@ -121,7 +122,7 @@ const Invoice = () => {
       invoiceNumber: "",
       invoiceDate: new Date().toISOString().split("T")[0],
       poNumber: "",
-      poDate: new Date().toISOString().split("T")[0],
+      poDate: "",
       toCompany: "",
       address: "",
       city: "",
@@ -130,10 +131,11 @@ const Invoice = () => {
       stateCode: "",
       transport: "",
       place: "",
+      transportCharge: "",
       items: []
     });
     setIsAddModalOpen(false);
-    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate ? newCustomer.poDate.substring(0, 10).split("-").reverse().join("/") : "", invoiceDate: newCustomer.invoiceDate.split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total } });
+    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate ? newCustomer.poDate.substring(0, 10).split("-").reverse().join("/") : "", invoiceDate: newCustomer.invoiceDate.split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total, transCharge: newCustomer.transportCharge } });
   };
 
   const handleEdit = (customer) => {
@@ -163,7 +165,7 @@ const Invoice = () => {
       invoiceNumber: "",
       invoiceDate: new Date().toISOString().split("T")[0],
       poNumber: "",
-      poDate: new Date().toISOString().split("T")[0],
+      poDate: "",
       toCompany: "",
       address: "",
       city: "",
@@ -172,6 +174,7 @@ const Invoice = () => {
       stateCode: "",
       transport: "",
       place: "",
+      transportCharge: "",
       items: []
     });
     setIsEditModalOpen(false);
@@ -190,7 +193,7 @@ const Invoice = () => {
         sum + ((parseFloat(item.quantity) || 0) * parseFloat(item.price) || 0),
       0
     );
-    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate ? newCustomer.poDate.substring(0, 10).split("-").reverse().join("/") : "", invoiceDate: newCustomer.invoiceDate.substring(0, 10).split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total} });
+    navigate(`/print`, { state: { companyName: newCustomer.toCompany, address: newCustomer.address, city: newCustomer.city, state: newCustomer.state, gstno: newCustomer.gstNumber, stateCode: newCustomer.stateCode, invoiceNo: newCustomer.invoiceNumber, poNumber: newCustomer.poNumber, poDate: newCustomer.poDate ? newCustomer.poDate.substring(0, 10).split("-").reverse().join("/") : "", invoiceDate: newCustomer.invoiceDate.substring(0, 10).split("-").reverse().join("/"), transport: newCustomer.transport, place: newCustomer.place, items: newCustomer.items, totalAmount: total, transCharge: newCustomer.transportCharge } });
   }
 
   const getTaxAndTotal = (customer) => {
@@ -199,7 +202,7 @@ const Invoice = () => {
       .toFixed(2)
     const tax = parseFloat(total * 0.18).toFixed(2)
     return {
-      total : parseFloat(parseFloat(total) + parseFloat(tax)).toFixed(2),
+      total : parseFloat(parseFloat(total) + parseFloat(tax) + parseFloat(customer.transportCharge)).toFixed(2),
       tax
     }
   }
@@ -208,7 +211,25 @@ const Invoice = () => {
     <div className="page-container">
       <div className="page-header">
         <h1 className="page-title">Invoice</h1>
-        <button className="add-button" onClick={() => setIsAddModalOpen(true)}>
+        <button className="add-button" onClick={() => {
+          setFormData({
+            invoiceNumber: customers.length + 1,
+            invoiceDate: new Date().toISOString().split("T")[0],
+            poNumber: "",
+            poDate: "",
+            toCompany: "",
+            address: "",
+            city: "",
+            state: "",
+            gstNumber: "",
+            stateCode: "",
+            transport: "",
+            place: "",
+            transportCharge: "",
+            items: []
+          });
+          setIsAddModalOpen(true)
+        }}>
           <Plus size={20} />
           Add Invoice
         </button>
@@ -218,11 +239,12 @@ const Invoice = () => {
         <table className="data-table">
           <thead>
             <tr>
-              <th>Invoice Number</th>
+              <th>Inv No</th>
               <th>Invoice Date</th>
               <th>To Company</th>
               <th>Amount</th>
               <th>Tax</th>
+              <th>Transport Charge</th>
               <th>Total</th>
               <th>Actions</th>
             </tr>
@@ -234,12 +256,12 @@ const Invoice = () => {
                 <td onClick={() => handleClick(customer)}>{customer.invoiceDate.substring(0, 10).split("-").reverse().join("/")}</td>
                 <td onClick={() => handleClick(customer)}>{customer.toCompany}</td>
                 <td onClick={() => handleClick(customer)}>
-                  ₹
                   {customer.items
                     .reduce((sum, item) => sum + ((parseFloat(item.quantity) || 0) * parseFloat(item.price) || 0), 0)
                     .toFixed(2)}
                 </td>
                 <td>{getTaxAndTotal(customer).tax}</td>
+                <td>{parseFloat(customer.transportCharge).toFixed(2)}</td>
                 <td>{getTaxAndTotal(customer).total}</td>
                 {/* <td>1000.00</td> */}
                 <td className="actions">
@@ -371,7 +393,7 @@ const Invoice = () => {
               <div className="form-group">
                 <label>Transport:</label>
                 <input
-                  type="text"
+                  type="number"
                   name="transport"
                   value={formData.transport}
                   onChange={handleInputChange}
@@ -384,6 +406,16 @@ const Invoice = () => {
                   type="text"
                   name="place"
                   value={formData.place}
+                  onChange={handleInputChange}
+                  
+                />
+              </div>
+              <div className="form-group">
+                <label>Transport Chrge:</label>
+                <input
+                  type="text"
+                  name="transportCharge"
+                  value={formData.transportCharge}
                   onChange={handleInputChange}
                   
                 />
@@ -465,6 +497,7 @@ const Invoice = () => {
                       stateCode: "",
                       transport: "",
                       place: "",
+                      transportCharge: "",
                       items: []
                     });
                   }}
@@ -584,7 +617,7 @@ const Invoice = () => {
               <div className="form-group">
                 <label>Transport:</label>
                 <input
-                  type="text"
+                  type="number"
                   name="transport"
                   value={formData.transport}
                   onChange={handleInputChange}
@@ -597,6 +630,16 @@ const Invoice = () => {
                   type="text"
                   name="place"
                   value={formData.place}
+                  onChange={handleInputChange}
+                  
+                />
+              </div>
+              <div className="form-group">
+                <label>Transport Chrge:</label>
+                <input
+                  type="text"
+                  name="transportCharge"
+                  value={formData.transportCharge}
                   onChange={handleInputChange}
                   
                 />
@@ -678,6 +721,7 @@ const Invoice = () => {
                       stateCode: "",
                       transport: "",
                       place: "",
+                      transportCharge: "",
                       items: []
                     });
                   }}
