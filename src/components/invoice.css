@@ -1,0 +1,73 @@
+/* flex justify-center items-center gap-2 mt-6 */
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+/* px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 */
+.prev{
+    padding: 8px 16px; /* px-4 py-2 */
+    background-color: #e5e7eb; /* bg-gray-200 */
+    border: none;
+    border-radius: 6px; /* rounded */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.prev:hover:not(:disabled) {
+    background-color: #d1d5db;
+}
+
+.prev:disabled {
+    opacity: 0.5; /* disabled:opacity-50 */
+    cursor: not-allowed;
+}
+
+.button {
+    padding: 8px 16px; /* px-4 py-2 */
+    border-radius: 6px; /* rounded */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .button-default {
+    background-color: #e5e7eb; /* bg-gray-200 */
+    color: black;
+  }
+  
+  .button-default:hover {
+    background-color: #d1d5db; /* hover:bg-gray-300 */
+  }
+  
+  .button-active {
+    background-color: #3b82f6; /* bg-blue-500 */
+    color: white;
+  }
+
+  .next {
+    padding: 8px 16px; /* px-4 py-2 */
+    background-color: #e5e7eb; /* bg-gray-200 */
+    border-radius: 6px; /* rounded */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .next:hover:not(:disabled) {
+    background-color: #d1d5db; /* hover:bg-gray-300 */
+  }
+  
+  .next:disabled {
+    opacity: 0.5; /* disabled:opacity-50 */
+    cursor: not-allowed;
+  }
+  
+  /* export button */
+  .btn{
+    display: flex;
+    gap: 10px;
+  }
