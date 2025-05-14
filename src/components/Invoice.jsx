@@ -33,6 +33,7 @@ const Invoice = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [invoice, setInvoice] = useState([]);
   const [ivnlen, setInvlen] = useState(0);
+  const [suggestions, setSuggestions] = useState([])
 
   useEffect(() => {
     getInvoice();
@@ -59,7 +60,7 @@ const Invoice = () => {
   const getCustomer = async () => {
     try {
       const response = await axios.get(
-        "https://fp-backend-3uya.onrender.com/customer/get"
+        "https://fp-backend-3uya.onrender.com/customer/get-all"
       );
       setData(response.data);
     } catch (err) {
@@ -79,7 +80,9 @@ const Invoice = () => {
       }
     }
     if (name === "toCompany") {
-      console.log(data);
+      // console.log(data);
+      const result = data.filter(item => item.toLowerCase().includes(value));
+      setSuggestions(result)
       const companyDetails = data.find((company) => company.name === value);
       console.log(value);
       console.log(companyDetails);
@@ -601,7 +604,7 @@ const Invoice = () => {
               <div className="form-group">
                 <label>Transport:</label>
                 <input
-                  type="number"
+                  type="text"
                   name="transport"
                   value={formData.transport}
                   onChange={handleInputChange}
@@ -643,6 +646,7 @@ const Invoice = () => {
                     onChange={(e) => handleItemChange(index, e)}
                   />
                   <input
+                    className="item-name"
                     type="text"
                     name="itemName"
                     placeholder="Item Name"
@@ -822,7 +826,7 @@ const Invoice = () => {
               <div className="form-group">
                 <label>Transport:</label>
                 <input
-                  type="number"
+                  type="text"
                   name="transport"
                   value={formData.transport}
                   onChange={handleInputChange}
