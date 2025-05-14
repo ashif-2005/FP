@@ -80,9 +80,6 @@ const Invoice = () => {
       }
     }
     if (name === "toCompany") {
-      // console.log(data);
-      const result = data.filter(item => item.toLowerCase().includes(value));
-      setSuggestions(result)
       const companyDetails = data.find((company) => company.name === value);
       console.log(value);
       console.log(companyDetails);
