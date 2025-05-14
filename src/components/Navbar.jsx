@@ -5,7 +5,10 @@ import {
   Package,
   FileText,
   Receipt,
-  LogOut
+  LogOut,
+  Notebook,
+  Boxes,
+  ClipboardList
 } from 'lucide-react';
 import logo from '../assets/logoWhite.png';
 
@@ -14,8 +17,11 @@ const Sidebar = () => {
   const menuItems = [
     { icon: Users, label: 'Customers', path: '/customer' },
     { icon: Package, label: 'Item', path: '/item' },
+    { icon: Boxes, label: 'Stock', path: '/stock' },
     { icon: FileText, label: 'Delivery Challan', path: '/dc' },
     { icon: Receipt, label: 'Invoice', path: '/invoice' },
+    { icon: Notebook, label: 'Invoice Ledger', path: '/inv-ledger' },
+    { icon: ClipboardList, label: 'Purchase Ledger', path: '/pur-ledger' }
   ];
 
   const handelLogo = () => {

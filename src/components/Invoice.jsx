@@ -29,9 +29,10 @@ const Invoice = () => {
     items: [],
   });
   const [page, setPage] = useState(1);
-  const [limit] = useState(15);
+  const [limit] = useState(12);
   const [totalPages, setTotalPages] = useState(1);
   const [invoice, setInvoice] = useState([]);
+  const [ivnlen, setInvlen] = useState(0);
 
   useEffect(() => {
     getInvoice();
@@ -49,6 +50,7 @@ const Invoice = () => {
       );
       setCustomers(res.data.data);
       setTotalPages(res.data.totalPages);
+      setInvlen(res.data.total);
     } catch (err) {
       console.log(err);
     }
@@ -371,7 +373,7 @@ const Invoice = () => {
             className="add-button"
             onClick={() => {
               setFormData({
-                invoiceNumber: customers.length + 1,
+                invoiceNumber: ivnlen + 1,
                 invoiceDate: new Date().toISOString().split("T")[0],
                 poNumber: "",
                 poDate: "",
