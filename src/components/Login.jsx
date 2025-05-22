@@ -4,7 +4,7 @@ import axios from "axios";
 import './login.css'
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const [credentials, setCredentials] = useState({ username: "Friends_Packs", password: "" });
 
   const url = import.meta.env.VITE_BACKEND_URL;
 
