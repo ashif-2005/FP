@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
+import Login from "./Login";
 
 const DeliveryChalan = () => {
     const [customers, setCustomers] = useState([]);
@@ -15,13 +16,35 @@ const DeliveryChalan = () => {
       items: []
     });
 
+    const url = import.meta.env.VITE_BACKEND_URL;
+
+    const [token, SetToken] = useState("")
+
+  useEffect(() => {
+    const tkn = getToken()
+    SetToken(tkn)
+  }, [])
+
+  const getToken = () => {
+    const name = 'token=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+    for (let c of cookies) {
+        c = c.trim();
+        if (c.indexOf(name) === 0) {
+        return c.substring(name.length);
+        }
+    }
+    return null;
+  }
+
     useEffect(()=>{
         getDC()
     }, [])
 
     const getDC = async () => {
         try{
-            const response = await axios.get("https://fp-backend-3uya.onrender.com/dc/get");
+            const response = await axios.get(`${url}/dc/get`);
             setCustomers(response.data)
           }
           catch(err){
@@ -63,7 +86,7 @@ const DeliveryChalan = () => {
         ...formData,
       };
       setCustomers((prev) => [...prev, newCustomer]);
-      const response = await axios.post("https://fp-backend-3uya.onrender.com/dc/add", formData, {
+      const response = await axios.post(`${url}/dc/add`, formData, {
         headers: { "Content-Type": "application/json" },
       });
       setFormData({
@@ -77,6 +100,7 @@ const DeliveryChalan = () => {
     };
   
     const handleEdit = (customer) => {
+      // console.log(customer)
       setCurrentCustomer(customer);
       setFormData(customer);
       setIsEditModalOpen(true);
@@ -84,6 +108,7 @@ const DeliveryChalan = () => {
   
     const handleUpdate = async(e) => {
       e.preventDefault();
+      // console.log(currentCustomer)
       setCustomers((prev) =>
         prev.map((customer) =>
           customer._id === currentCustomer._id
@@ -91,7 +116,8 @@ const DeliveryChalan = () => {
             : customer
         )
       );
-      const response = await axios.put(`https://fp-backend-3uya.onrender.com/dc/edit/${currentCustomer._id}`, formData, {
+      // console.log(currentCustomer._id)
+      const response = await axios.put(`${url}/dc/edit/${currentCustomer._id}`, formData, {
         headers: { "Content-Type": "application/json" },
       });
       setFormData({
@@ -107,12 +133,12 @@ const DeliveryChalan = () => {
     const handleDelete = async (id) => {
       if (window.confirm("Are you sure you want to delete this DC?")) {
         setCustomers((prev) => prev.filter((customer) => customer._id !== id));
-        const response = await axios.delete(`https://fp-backend-3uya.onrender.com/dc/delete/${id}`);
+        const response = await axios.delete(`${url}/dc/delete/${id}`);
       }
     };
   
     return (
-      <div className="page-container">
+      token ? <div className="page-container">
         <div className="page-header">
           <h1 className="page-title">Delivery Challan</h1>
           <button className="add-button" onClick={() => setIsAddModalOpen(true)}>
@@ -406,7 +432,7 @@ const DeliveryChalan = () => {
             </div>
           </div>
         )}
-      </div>
+      </div> : <div> <Login /> </div>
     );
 }
 

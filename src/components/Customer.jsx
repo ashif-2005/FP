@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
+import Login from "./Login";
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
@@ -19,6 +20,28 @@ const Customers = () => {
   const [limit] = useState(12);
   const [totalPages, setTotalPages] = useState(1);
 
+  const url = import.meta.env.VITE_BACKEND_URL;
+
+  const [token, SetToken] = useState("")
+  
+    useEffect(() => {
+      const tkn = getToken()
+      SetToken(tkn)
+    }, [])
+  
+    const getToken = () => {
+      const name = 'token=';
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const cookies = decodedCookie.split(';');
+      for (let c of cookies) {
+          c = c.trim();
+          if (c.indexOf(name) === 0) {
+          return c.substring(name.length);
+          }
+      }
+      return null;
+    }
+
   useEffect(() => {
     getCustomer();
   }, []);
@@ -30,7 +53,7 @@ const Customers = () => {
   const getCustomer = async () => {
     try {
       const res = await axios.get(
-        `https://fp-backend-3uya.onrender.com/customer/get?page=${page}&limit=${limit}`
+        `${url}/customer/get?page=${page}&limit=${limit}`
       );
       setCustomers(res.data.data);
       setTotalPages(res.data.totalPages);
@@ -58,7 +81,7 @@ const Customers = () => {
     };
     setCustomers((prev) => [...prev, newCustomer]);
     const response = await axios.post(
-      "https://fp-backend-3uya.onrender.com/customer/add",
+      `${url}/customer/add`,
       formData,
       {
         headers: { "Content-Type": "application/json" },
@@ -90,8 +113,9 @@ const Customers = () => {
           : customer
       )
     );
+    // console.log(currentCustomer._id)
     const response = await axios.put(
-      `https://fp-backend-3uya.onrender.com/customer/edit/${currentCustomer._id}`,
+      `${url}/customer/edit/${currentCustomer._id}`,
       formData,
       {
         headers: { "Content-Type": "application/json" },
@@ -112,13 +136,13 @@ const Customers = () => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
       const response = await axios.delete(
-        `https://fp-backend-3uya.onrender.com/customer/delete/${id}`
+        `${url}/customer/delete/${id}`
       );
     }
   };
 
   return (
-    <div className="page-container">
+    token ? <div className="page-container">
       <div className="page-header">
         <h1 className="page-title">Customers</h1>
         <button className="add-button" onClick={() => setIsAddModalOpen(true)}>
@@ -378,7 +402,7 @@ const Customers = () => {
           </div>
         </div>
       )}
-    </div>
+    </div> : <div> <Login /> </div>
   );
 };
 

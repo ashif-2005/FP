@@ -1,30 +1,67 @@
 import React from "react";
+import { useState } from "react";
+import axios from "axios";
+import './login.css'
 
 const Login = () => {
+  const [credentials, setCredentials] = useState({ username: "", password: "" });
+
+  const url = import.meta.env.VITE_BACKEND_URL;
+
+  const handleChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Logging in with:", credentials);
+    const res = await axios.post(`${url}/user/login`,
+      credentials,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    if(res.status == 200){
+      alert("Login Successfull...")
+      document.cookie = `token=${res.data.token}`;
+      location.reload();
+    }
+  };
+
   return (
-    <div className="container">
-      <div className="left-section">
-        <div className="logo"> 
-          <h1>FRIENDS PACKS</h1>
+    <div className="page-container">
+      <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2 className="login-title">Welcome Back</h2>
+
+        <div className="input-group">
+          <label htmlFor="email">Username</label>
+          <input 
+            type="text" 
+            id="email" 
+            name="username"
+            value={credentials.username}
+            onChange={handleChange}
+            required 
+          />
         </div>
-        <h2>Welcome to Friends Packs Billing Software</h2>
-        <p>Log in to access your software and continue where you left off. Use your Username and password for authentication.</p>
-        <button className="btn">Login</button>
-      </div>
-      <div className="right-section">
-        <div className="login-box">
-          <h2>Login</h2>
-          <form>
-            <label>Username</label>
-            <input type="text" placeholder="Enter your username" className="input-field" />
-            <label>Password</label>
-            <input type="password" placeholder="Enter your password" className="input-field" />
-            <div className="forgot-password">
-              <a href="#">Forgot Password?</a>
-            </div>
-            <button className="btn login-btn">Login</button>
-          </form>
+
+        <div className="input-group">
+          <label htmlFor="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password"
+            value={credentials.password}
+            onChange={handleChange}
+            required 
+          />
         </div>
+
+        <button type="submit" className="login-button">Login</button>
+
+        <p className="signup-link">Don't have an account? <a href="#">Sign up</a></p>
+      </form>
       </div>
     </div>
   );

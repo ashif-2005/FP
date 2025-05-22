@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import "./invoice.css";
+import Login from "./Login";
 
 const Invoice = () => {
   const navigate = useNavigate();
@@ -33,9 +34,30 @@ const Invoice = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [invoice, setInvoice] = useState([]);
   const [ivnlen, setInvlen] = useState(0);
-  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState([])
+  const [filteredItems, setFilteredItems] = useState([]);
+
+  const url = import.meta.env.VITE_BACKEND_URL;
+
+  const [token, SetToken] = useState("")
+
+  const getToken = () => {
+    const name = 'token=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+    for (let c of cookies) {
+        c = c.trim();
+        if (c.indexOf(name) === 0) {
+        return c.substring(name.length);
+        }
+    }
+    return null;
+  }
 
   useEffect(() => {
+    const tkn = getToken()
+    SetToken(tkn)
+    // console.log(tkn)
     getInvoice();
     getCustomer();
   }, []);
@@ -47,7 +69,7 @@ const Invoice = () => {
   const getInvoice = async () => {
     try {
       const res = await axios.get(
-        `https://fp-backend-3uya.onrender.com/invoice/get?page=${page}&limit=${limit}`
+        `${url}/invoice/get?page=${page}&limit=${limit}`
       );
       setCustomers(res.data.data);
       setTotalPages(res.data.totalPages);
@@ -60,7 +82,7 @@ const Invoice = () => {
   const getCustomer = async () => {
     try {
       const response = await axios.get(
-        "https://fp-backend-3uya.onrender.com/customer/get-all"
+        `${url}/customer/get-all`
       );
       setData(response.data);
     } catch (err) {
@@ -80,19 +102,30 @@ const Invoice = () => {
       }
     }
     if (name === "toCompany") {
-      const companyDetails = data.find((company) => company.name === value);
-      console.log(value);
-      console.log(companyDetails);
-      if (companyDetails) {
-        setFormData((prev) => ({
-          ...prev,
-          address: companyDetails.address,
-          city: companyDetails.city,
-          state: companyDetails.state,
-          gstNumber: companyDetails.gstin,
-          stateCode: companyDetails.statecode,
-        }));
+      if (value.trim() === '') {
+        setFilteredItems([]);
+        setShowSuggestions(false);
+        return;
       }
+      const filtered = data.filter((item) =>
+        item.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredItems(filtered);
+      setShowSuggestions(true);
+
+      // const companyDetails = data.find((company) => company.name === value);
+      // console.log(value);
+      // console.log(companyDetails);
+      // if (companyDetails) {
+      //   setFormData((prev) => ({
+      //     ...prev,
+      //     address: companyDetails.address,
+      //     city: companyDetails.city,
+      //     state: companyDetails.state,
+      //     gstNumber: companyDetails.gstin,
+      //     stateCode: companyDetails.statecode,
+      //   }));
+      // }
     }
   };
 
@@ -137,7 +170,7 @@ const Invoice = () => {
       0
     );
     const response = await axios.post(
-      "https://fp-backend-3uya.onrender.com/invoice/add",
+      `${url}/invoice/add`,
       formData,
       {
         headers: { "Content-Type": "application/json" },
@@ -205,7 +238,7 @@ const Invoice = () => {
       )
     );
     const response = await axios.put(
-      `https://fp-backend-3uya.onrender.com/invoice/edit/${currentCustomer._id}`,
+      `${url}/invoice/edit/${currentCustomer._id}`,
       formData,
       {
         headers: { "Content-Type": "application/json" },
@@ -234,7 +267,7 @@ const Invoice = () => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
       const response = await axios.delete(
-        `https://fp-backend-3uya.onrender.com/invoice/delete/${id}`
+        `${url}/invoice/delete/${id}`
       );
     }
   };
@@ -303,7 +336,7 @@ const Invoice = () => {
       "Total",
     ];
 
-    const inv = await axios.get("https://fp-backend-3uya.onrender.com/invoice/get-all");
+    const inv = await axios.get(`${url}/invoice/get-all`);
     const data = inv.data;
 
     let totalAmount = 0;
@@ -361,8 +394,27 @@ const Invoice = () => {
     saveAs(blob, "invoices.csv");
   };
 
+  const handleItem = (name) => {
+    console.log(name)
+    const companyDetails = data.find((company) => company.name === name);
+      console.log(name);
+      console.log(companyDetails);
+      if (companyDetails) {
+        setFormData((prev) => ({
+          ...prev,
+          toCompany: name,
+          address: companyDetails.address,
+          city: companyDetails.city,
+          state: companyDetails.state,
+          gstNumber: companyDetails.gstin,
+          stateCode: companyDetails.statecode,
+        }));
+      }
+    // setFormData({toCompany: name});
+  }
+
   return (
-    <div className="page-container">
+    token ? <div className="page-container">
       <div className="page-header">
         <h1 className="page-title">Invoice</h1>
         <div className="btn">
@@ -538,15 +590,26 @@ const Invoice = () => {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="form-group">
+              <div className="form-group" id="comp">
                 <label>To Company:</label>
                 <input
                   type="text"
                   name="toCompany"
                   value={formData.toCompany}
                   onChange={handleInputChange}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
+                  onFocus={() => formData.toCompany && setShowSuggestions(true)}
                   required
                 />
+                {showSuggestions && filteredItems.length > 0 && (
+                  <ul className="suggestion-list">
+                    {filteredItems.map((item) => (
+                      <li key={item.id} onClick={() => handleItem(item.name)}>
+                        {item.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <div className="form-group">
                 <label>Address:</label>
@@ -936,7 +999,7 @@ const Invoice = () => {
           </div>
         </div>
       )}
-    </div>
+    </div> : <div> <Login /> </div>
   );
 };
 

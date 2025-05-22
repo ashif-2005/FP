@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
+import Login from "./Login";
 
 const Item = () => {
   const [customers, setCustomers] = useState([]);
@@ -11,22 +12,43 @@ const Item = () => {
     item: "",
     hsn: "",
     type: "",
-    price: 0
+    price: 0,
   });
 
-  useEffect(()=>{
-    getItem()
+  const url = import.meta.env.VITE_BACKEND_URL;
+
+  const [token, SetToken] = useState("")
+
+  useEffect(() => {
+    const tkn = getToken()
+    SetToken(tkn)
   }, [])
 
-  const getItem = async() => {
-    try{
-      const response = await axios.get("https://fp-backend-3uya.onrender.com/item/get");
-      setCustomers(response.data)
+  const getToken = () => {
+    const name = 'token=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+    for (let c of cookies) {
+        c = c.trim();
+        if (c.indexOf(name) === 0) {
+        return c.substring(name.length);
+        }
     }
-    catch(err){
-      console.log(err)
-    }
+    return null;
   }
+
+  useEffect(() => {
+    getItem();
+  }, []);
+
+  const getItem = async () => {
+    try {
+      const response = await axios.get(`${url}/item/get`);
+      setCustomers(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,19 +62,20 @@ const Item = () => {
       ...formData,
     };
     setCustomers((prev) => [...prev, newCustomer]);
-    const response = await axios.post("https://fp-backend-3uya.onrender.com/item/add", formData, {
+    const response = await axios.post(`${url}/item/add`, formData, {
       headers: { "Content-Type": "application/json" },
     });
     setFormData({
       item: "",
       hsn: "",
       type: "",
-      price: 0
+      price: 0,
     });
     setIsAddModalOpen(false);
   };
 
   const handleEdit = (customer) => {
+    // console.log(customer)
     setCurrentCustomer(customer);
     setFormData(customer);
     setIsEditModalOpen(true);
@@ -60,6 +83,7 @@ const Item = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    // console.log(formData)
     setCustomers((prev) =>
       prev.map((customer) =>
         customer._id === currentCustomer._id
@@ -67,14 +91,18 @@ const Item = () => {
           : customer
       )
     );
-    const response = await axios.put(`https://fp-backend-3uya.onrender.com/item/edit/${currentCustomer._id}`, formData, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await axios.put(
+      `${url}/item/edit/${currentCustomer._id}`,
+      formData,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     setFormData({
       item: "",
       hsn: "",
       type: "",
-      price: 0
+      price: 0,
     });
     setIsEditModalOpen(false);
   };
@@ -82,12 +110,12 @@ const Item = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
-      const response = await axios.delete(`https://fp-backend-3uya.onrender.com/item/delete/${id}`);
+      const response = await axios.delete(`${url}/item/delete/${id}`);
     }
   };
 
   return (
-    <div className="page-container">
+    token ? <div className="page-container">
       <div className="page-header">
         <h1 className="page-title">Items</h1>
         <button className="add-button" onClick={() => setIsAddModalOpen(true)}>
@@ -188,12 +216,12 @@ const Item = () => {
                   type="button"
                   className="cancel-button"
                   onClick={() => {
-                    setIsAddModalOpen(false)
+                    setIsAddModalOpen(false);
                     setFormData({
                       item: "",
                       hsn: "",
                       type: "",
-                      price: 0
+                      price: 0,
                     });
                   }}
                 >
@@ -259,12 +287,12 @@ const Item = () => {
                   type="button"
                   className="cancel-button"
                   onClick={() => {
-                    setIsEditModalOpen(false)
+                    setIsEditModalOpen(false);
                     setFormData({
                       item: "",
                       hsn: "",
                       type: "",
-                      price: 0
+                      price: 0,
                     });
                   }}
                 >
@@ -275,7 +303,7 @@ const Item = () => {
           </div>
         </div>
       )}
-    </div>
+    </div> : <div> <Login /> </div>
   );
 };
 

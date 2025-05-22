@@ -28,6 +28,12 @@ const Sidebar = () => {
     navigate(`/`)
   }
 
+  const handelLogout = () => {
+    console.log("Logout")
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    location.reload();  
+  }
+
   return (
     <div className="sidebar">
       <div className="sidebar-header" onClick={handelLogo}>
@@ -47,7 +53,7 @@ const Sidebar = () => {
           </NavLink>
         ))}
       </nav>
-      <button className="logout-button">
+      <button className="logout-button" onClick={handelLogout}>
         <LogOut size={20} />
         <span>Logout</span>
       </button>

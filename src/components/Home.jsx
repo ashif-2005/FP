@@ -1,9 +1,31 @@
 import React from "react";
 import logo from '../assets/logo.png'
+import Login from "./Login";
+import { useState, useEffect } from "react";
 
 const Home = () => {
+  const [token, SetToken] = useState("")
+  
+    useEffect(() => {
+      const tkn = getToken()
+      SetToken(tkn)
+    }, [])
+  
+    const getToken = () => {
+      const name = 'token=';
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const cookies = decodedCookie.split(';');
+      for (let c of cookies) {
+          c = c.trim();
+          if (c.indexOf(name) === 0) {
+          return c.substring(name.length);
+          }
+      }
+      return null;
+    }
+
   return (
-    <div className="page-container">
+    token ? <div className="page-container">
       <div className="content-wrapper">
         <div className="wrp">
         <div className="home-logo">
@@ -38,7 +60,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div> : <div> <Login /> </div>
   );
 };
 

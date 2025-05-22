@@ -7,6 +7,8 @@ import Item from './components/Item';
 import Invoice from './components/Invoice';
 import PrintInvoice from './components/PrintInvoice';
 import DeliveryChalan from './components/DeliveryChalan';
+import Login from './components/Login';
+import Stock from './components/Stock';
 
 function App() {
 
@@ -17,11 +19,13 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/customer" element={<Customer />} />
             <Route path="/item" element={<Item />} />
             <Route path="/invoice" element={<Invoice />} />
             <Route path="/print" element={<PrintInvoice />} />
             <Route path="/dc" element={<DeliveryChalan />} />
+            <Route path="/stock" element={<Stock />} />
           </Routes>
         </main>
       </div>
