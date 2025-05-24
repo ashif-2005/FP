@@ -113,19 +113,19 @@ const Invoice = () => {
       setFilteredItems(filtered);
       setShowSuggestions(true);
 
-      // const companyDetails = data.find((company) => company.name === value);
-      // console.log(value);
-      // console.log(companyDetails);
-      // if (companyDetails) {
-      //   setFormData((prev) => ({
-      //     ...prev,
-      //     address: companyDetails.address,
-      //     city: companyDetails.city,
-      //     state: companyDetails.state,
-      //     gstNumber: companyDetails.gstin,
-      //     stateCode: companyDetails.statecode,
-      //   }));
-      // }
+      const companyDetails = data.find((company) => company.name === value);
+      console.log(value);
+      console.log(companyDetails);
+      if (companyDetails) {
+        setFormData((prev) => ({
+          ...prev,
+          address: companyDetails.address,
+          city: companyDetails.city,
+          state: companyDetails.state,
+          gstNumber: companyDetails.gstin,
+          stateCode: companyDetails.statecode,
+        }));
+      }
     }
   };
 
