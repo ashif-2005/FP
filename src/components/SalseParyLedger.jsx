@@ -79,7 +79,7 @@ const SalseParyLedger = () => {
               <th>S.No</th>
               <th>Name</th>
               <th>GSTIN</th>
-              <th>Balance</th>
+              <th style={{ textAlign: "right" }}>Balance</th>
             </tr>
           </thead>
           <tbody>

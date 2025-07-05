@@ -456,11 +456,11 @@ const Invoice = () => {
               <th>Inv No</th>
               <th>Invoice Date</th>
               <th>To Company</th>
-              <th>Amount</th>
-              <th>Tax</th>
-              <th>Transport Charge</th>
-              <th>Total</th>
-              <th>Actions</th>
+              <th style={{ textAlign: "right" }}>Amount</th>
+              <th style={{ textAlign: "right" }}>Tax</th>
+              <th style={{ textAlign: "right" }}>Transport Charge</th>
+              <th style={{ textAlign: "right" }}>Total</th>
+              <th style={{ textAlign: "right" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -479,7 +479,7 @@ const Invoice = () => {
                 <td onClick={() => handleClick(customer)}>
                   {customer.toCompany}
                 </td>
-                <td onClick={() => handleClick(customer)}>
+                <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>
                   {customer.items
                     .reduce(
                       (sum, item) =>
@@ -490,9 +490,9 @@ const Invoice = () => {
                     )
                     .toFixed(2)}
                 </td>
-                <td>{getTaxAndTotal(customer).tax}</td>
-                <td>{parseFloat(customer.transportCharge).toFixed(2)}</td>
-                <td>{getTaxAndTotal(customer).total}</td>
+                <td style={{ textAlign: "right" }}>{getTaxAndTotal(customer).tax}</td>
+                <td style={{ textAlign: "right" }}>{parseFloat(customer.transportCharge).toFixed(2)}</td>
+                <td style={{ textAlign: "right" }}>{getTaxAndTotal(customer).total}</td>
                 {/* <td>1000.00</td> */}
                 <td className="actions">
                   <button

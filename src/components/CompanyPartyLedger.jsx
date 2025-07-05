@@ -133,9 +133,9 @@ const CompanyPartyLedger = () => {
               <th>Payment Mode</th>
               <th>Bank</th>
               <th>Cheque Number</th>
-              <th>Amount</th>
-              <th>Payment</th>
-              <th>Balance</th>
+              <th style={{ textAlign: "right" }}>Amount</th>
+              <th style={{ textAlign: "right" }}>Payment</th>
+              <th style={{ textAlign: "right" }}>Balance</th>
             </tr>
           </thead>
           <tbody>
