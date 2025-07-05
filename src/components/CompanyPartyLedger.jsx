@@ -118,7 +118,7 @@ const CompanyPartyLedger = () => {
   return token ? (
     <div className="page-container">
       <div className="page-header">
-        <h1 className="page-title">{company}'s Invoice Ledger</h1>
+        <h1 className="page-title">{company}'s Sales Ledger</h1>
       </div>
 
       <div className="content-wrapper">
@@ -127,7 +127,7 @@ const CompanyPartyLedger = () => {
             <tr>
               <th>S No</th>
               <th>Invoice / Voucher Date</th>
-              <th>Party Name</th>
+              {/* <th>Party Name</th> */}
               <th>Invoice / Voucher Number</th>
               <th>Type</th>
               <th>Payment Mode</th>
@@ -141,9 +141,9 @@ const CompanyPartyLedger = () => {
           <tbody>
             <tr>
               <td colSpan="8" style={{ textAlign: "center", fontWeight: "bold" }}>OPENING BALANCE</td>
-              <td style={{ fontWeight: "bold" }}>{parseFloat(data.op_balance).toFixed(2)}</td>
+              <td style={{ textAlign: "right", fontWeight: "bold" }}>{parseFloat(data.op_balance).toFixed(2)}</td>
               <td></td>
-              <td style={{ fontWeight: "bold" }}>{parseFloat(data.op_balance).toFixed(2)}</td>
+              <td style={{ textAlign: "right", fontWeight: "bold" }}>{parseFloat(data.op_balance).toFixed(2)}</td>
             </tr>
             {customers.map((customer, index) => (
               <tr key={customer.id}>
@@ -155,15 +155,15 @@ const CompanyPartyLedger = () => {
                     .reverse()
                     .join("/")}
                 </td>
-                <td>{customer.partyCompany}</td>
+                {/* <td>{customer.partyCompany}</td> */}
                 <td>{customer.refNum}</td>
                 <td>{customer.logType}</td>
                 <td>{customer.paymentMode}</td>
                 <td>{customer.bank}</td>
                 <td>{customer.chequeNum}</td>
-                <td>{parseFloat(customer.amount).toFixed(2)}</td>
-                <td>{parseFloat(customer.payment).toFixed(2)}</td>
-                <td>{parseFloat(customer.balance).toFixed(2)}</td>
+                <td style={{ textAlign: "right" }}>{parseFloat(customer.amount).toFixed(2)}</td>
+                <td style={{ textAlign: "right" }}>{parseFloat(customer.payment).toFixed(2)}</td>
+                <td style={{ textAlign: "right" }}>{parseFloat(customer.balance).toFixed(2)}</td>
               </tr>
             ))}
             {/* <tr>

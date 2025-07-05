@@ -100,9 +100,9 @@ const CompanyInvLedger = () => {
           <thead>
             <tr>
               <th>S.No</th>
-              <th>Inv No</th>
+              <th>Invoice Number</th>
               <th>Invoice Date</th>
-              <th>To Company</th>
+              {/* <th>To Company</th> */}
               <th>Amount</th>
               <th>Tax</th>
               <th>Transport Charge</th>
@@ -123,10 +123,10 @@ const CompanyInvLedger = () => {
                     .reverse()
                     .join("/")}
                 </td>
-                <td>
+                {/* <td>
                   {customer.toCompany}
-                </td>
-                <td>
+                </td> */}
+                <td style={{ textAlign: "right" }}>
                   {customer.items
                     .reduce(
                       (sum, item) =>
@@ -137,9 +137,9 @@ const CompanyInvLedger = () => {
                     )
                     .toFixed(2)}
                 </td>
-                <td>{getTaxAndTotal(customer).tax}</td>
-                <td>{parseFloat(customer.transportCharge).toFixed(2)}</td>
-                <td>{getTaxAndTotal(customer).total}</td>
+                <td style={{ textAlign: "right" }}>{getTaxAndTotal(customer).tax}</td>
+                <td style={{ textAlign: "right" }}>{parseFloat(customer.transportCharge).toFixed(2)}</td>
+                <td style={{ textAlign: "right" }}>{getTaxAndTotal(customer).total}</td>
               </tr>
             ))}
           </tbody>

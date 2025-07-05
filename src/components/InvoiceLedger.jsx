@@ -88,7 +88,7 @@ const InvoiceLedger = () => {
                 <td onClick={() => handleClick(customer)}>{index + 1}</td>
                 <td onClick={() => handleClick(customer)}>{customer.name}</td>
                 <td onClick={() => handleClick(customer)}>{customer.gstin}</td>
-                <td onClick={() => handleClick(customer)}>
+                <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>
                   {parseFloat(customer.balance).toFixed(2)}
                 </td>
               </tr>

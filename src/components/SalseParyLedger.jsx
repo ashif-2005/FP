@@ -69,7 +69,7 @@ const SalseParyLedger = () => {
   return token ? (
     <div className="page-container">
       <div className="page-header">
-        <h1 className="page-title">Salse Party Ledger</h1>
+        <h1 className="page-title">Sales Party Ledger</h1>
       </div>
 
       <div className="content-wrapper">
@@ -88,7 +88,7 @@ const SalseParyLedger = () => {
                 <td onClick={() => handleClick(customer)}>{index + 1}</td>
                 <td onClick={() => handleClick(customer)}>{customer.name}</td>
                 <td onClick={() => handleClick(customer)}>{customer.gstin}</td>
-                <td onClick={() => handleClick(customer)}>
+                <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>
                   {parseFloat(customer.balance).toFixed(2)}
                 </td>
               </tr>

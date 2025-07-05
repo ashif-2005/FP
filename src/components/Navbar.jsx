@@ -23,7 +23,7 @@ const Sidebar = () => {
     { icon: FileText, label: 'Delivery Challan', path: '/dc' },
     { icon: Receipt, label: 'Invoice', path: '/invoice' },
     { icon: Notebook, label: 'Invoice Ledger', path: '/inv-ledger' },
-    { icon: Wallet, label: 'Salse Voucher', path: '/salse-voucher' },
+    { icon: Wallet, label: 'Sales Voucher', path: '/salse-voucher' },
     { icon: ClipboardList, label: 'Salse Party Ledger', path: '/salse-party-ledger' }
   ];
 
