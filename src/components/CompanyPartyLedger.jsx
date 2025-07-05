@@ -140,7 +140,7 @@ const CompanyPartyLedger = () => {
           </thead>
           <tbody>
             <tr>
-              <td colSpan="8" style={{ textAlign: "center", fontWeight: "bold" }}>OPENING BALANCE</td>
+              <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>OPENING BALANCE</td>
               <td style={{ textAlign: "right", fontWeight: "bold" }}>{parseFloat(data.op_balance).toFixed(2)}</td>
               <td></td>
               <td style={{ textAlign: "right", fontWeight: "bold" }}>{parseFloat(data.op_balance).toFixed(2)}</td>

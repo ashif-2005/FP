@@ -24,7 +24,7 @@ const Sidebar = () => {
     { icon: Receipt, label: 'Invoice', path: '/invoice' },
     { icon: Notebook, label: 'Invoice Ledger', path: '/inv-ledger' },
     { icon: Wallet, label: 'Sales Voucher', path: '/salse-voucher' },
-    { icon: ClipboardList, label: 'Salse Party Ledger', path: '/salse-party-ledger' }
+    { icon: ClipboardList, label: 'Sales Party Ledger', path: '/salse-party-ledger' }
   ];
 
   const handelLogo = () => {
