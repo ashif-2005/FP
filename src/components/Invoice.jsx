@@ -264,7 +264,7 @@ const Invoice = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this customer?")) {
+    if (window.confirm("Are you sure you want to delete this Invoice?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
       const response = await axios.delete(
         `${url}/invoice/delete/${id}`
@@ -550,7 +550,7 @@ const Invoice = () => {
       {isAddModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Add New Customer</h2>
+            <h2>Add New Invoice</h2>
             <form onSubmit={handleAdd}>
               <div className="form-group">
                 <label>Invoice Number:</label>
@@ -783,7 +783,7 @@ const Invoice = () => {
       {isEditModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Edit Customer</h2>
+            <h2>Edit Invoice</h2>
             <form onSubmit={handleUpdate}>
               <div className="form-group">
                 <label>Invoice Number:</label>

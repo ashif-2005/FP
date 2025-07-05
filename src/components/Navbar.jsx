@@ -8,7 +8,9 @@ import {
   LogOut,
   Notebook,
   Boxes,
-  ClipboardList
+  ClipboardList,
+  DollarSign,
+  Wallet
 } from 'lucide-react';
 import logo from '../assets/logoWhite.png';
 
@@ -21,7 +23,8 @@ const Sidebar = () => {
     { icon: FileText, label: 'Delivery Challan', path: '/dc' },
     { icon: Receipt, label: 'Invoice', path: '/invoice' },
     { icon: Notebook, label: 'Invoice Ledger', path: '/inv-ledger' },
-    { icon: ClipboardList, label: 'Purchase Ledger', path: '/pur-ledger' }
+    { icon: Wallet, label: 'Salse Voucher', path: '/salse-voucher' },
+    { icon: ClipboardList, label: 'Salse Party Ledger', path: '/salse-party-ledger' }
   ];
 
   const handelLogo = () => {

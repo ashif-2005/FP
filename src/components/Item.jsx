@@ -108,7 +108,7 @@ const Item = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this customer?")) {
+    if (window.confirm("Are you sure you want to delete this Item?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
       const response = await axios.delete(`${url}/item/delete/${id}`);
     }
@@ -166,7 +166,7 @@ const Item = () => {
       {isAddModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Add New Customer</h2>
+            <h2>Add New Item</h2>
             <form onSubmit={handleAdd}>
               <div className="form-group">
                 <label>Item:</label>
@@ -237,7 +237,7 @@ const Item = () => {
       {isEditModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Edit Customer</h2>
+            <h2>Edit Item</h2>
             <form onSubmit={handleUpdate}>
               <div className="form-group">
                 <label>Item:</label>
