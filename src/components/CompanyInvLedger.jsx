@@ -103,10 +103,10 @@ const CompanyInvLedger = () => {
               <th>Invoice Number</th>
               <th>Invoice Date</th>
               {/* <th>To Company</th> */}
-              <th>Amount</th>
-              <th>Tax</th>
-              <th>Transport Charge</th>
-              <th>Total</th>
+              <th style={{ textAlign: "right" }}>Amount</th>
+              <th style={{ textAlign: "right" }}>Tax</th>
+              <th style={{ textAlign: "right" }}>Transport Charge</th>
+              <th style={{ textAlign: "right" }}>Total</th>
             </tr>
           </thead>
           <tbody>
