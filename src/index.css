@@ -254,7 +254,9 @@ body {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select,
+.form-group option {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #d1d5db;

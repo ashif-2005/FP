@@ -2,7 +2,6 @@ import React, { useState, useEffect, use } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
 import Login from "./Login";
-import "./invoice.css";
 
 const SalseVoucher = () => {
   const [customers, setCustomers] = useState([]);
@@ -25,6 +24,7 @@ const SalseVoucher = () => {
   const [showSuggestions, setShowSuggestions] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [data, setData] = useState([]);
+  const paymentOptions = ["Cheque", "NEFT/RTGS", "Cash"];
 
   const url = import.meta.env.VITE_BACKEND_URL;
 
@@ -309,38 +309,35 @@ const SalseVoucher = () => {
               </div>
               <div className="form-group">
                 <label>Party Name:</label>
-                <input
-                  type="text"
+                <select
                   name="partyCompany"
                   value={formData.partyCompany}
                   onChange={handleInputChange}
-                  onBlur={() =>
-                    setTimeout(() => setShowSuggestions(false), 100)
-                  }
-                  onFocus={() =>
-                    formData.partyCompany && setShowSuggestions(true)
-                  }
                   required
-                />
-                {showSuggestions && filteredItems.length > 0 && (
-                  <ul className="suggestion-list">
-                    {filteredItems.map((item) => (
-                      <li key={item.id} onClick={() => handleItem(item.name)}>
-                        {item.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                >
+                  <option value="">-- Select Party Name --</option>
+                  {data.map((mode) => (
+                    <option key={mode._id} value={mode.name}>
+                      {mode.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
                 <label>Payment Mode:</label>
-                <input
-                  type="text"
+                <select
                   name="paymentMode"
                   value={formData.paymentMode}
                   onChange={handleInputChange}
                   required
-                />
+                >
+                  <option value="">-- Select Payment Mode --</option>
+                  {paymentOptions.map((mode) => (
+                    <option key={mode} value={mode}>
+                      {mode}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
                 <label>Bank:</label>
@@ -433,13 +430,19 @@ const SalseVoucher = () => {
               </div>
               <div className="form-group">
                 <label>Payment Mode:</label>
-                <input
-                  type="text"
+                <select
                   name="paymentMode"
                   value={formData.paymentMode}
                   onChange={handleInputChange}
                   required
-                />
+                >
+                  <option value="">-- Select Payment Mode --</option>
+                  {paymentOptions.map((mode) => (
+                    <option key={mode} value={mode}>
+                      {mode}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
                 <label>Bank:</label>

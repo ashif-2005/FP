@@ -34,8 +34,6 @@ const Invoice = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [invoice, setInvoice] = useState([]);
   const [ivnlen, setInvlen] = useState(0);
-  const [showSuggestions, setShowSuggestions] = useState([])
-  const [filteredItems, setFilteredItems] = useState([]);
 
   const url = import.meta.env.VITE_BACKEND_URL;
 
@@ -102,17 +100,6 @@ const Invoice = () => {
       }
     }
     if (name === "toCompany") {
-      if (value.trim() === '') {
-        setFilteredItems([]);
-        setShowSuggestions(false);
-        return;
-      }
-      const filtered = data.filter((item) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredItems(filtered);
-      setShowSuggestions(true);
-
       const companyDetails = data.find((company) => company.name === value);
       console.log(value);
       console.log(companyDetails);
@@ -592,24 +579,19 @@ const Invoice = () => {
               </div>
               <div className="form-group" id="comp">
                 <label>To Company:</label>
-                <input
-                  type="text"
+                <select
                   name="toCompany"
                   value={formData.toCompany}
                   onChange={handleInputChange}
-                  onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
-                  onFocus={() => formData.toCompany && setShowSuggestions(true)}
                   required
-                />
-                {showSuggestions && filteredItems.length > 0 && (
-                  <ul className="suggestion-list">
-                    {filteredItems.map((item) => (
-                      <li key={item.id} onClick={() => handleItem(item.name)}>
-                        {item.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                >
+                  <option value="">-- Select To Company --</option>
+                  {data.map((mode) => (
+                    <option key={mode._id} value={mode.name}>
+                      {mode.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
                 <label>Address:</label>
