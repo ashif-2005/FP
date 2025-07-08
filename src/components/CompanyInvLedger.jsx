@@ -89,6 +89,15 @@ const CompanyInvLedger = () => {
     };
   };
 
+  const adjustToNearestWhole = (amount) => {
+    const rounded = Math.round(amount);
+    const difference = (rounded - amount).toFixed(2);
+    return {
+      roundedTotal: rounded,
+      adjustment: difference > 0 ? `+${difference}` : difference,
+    };
+  }
+
   return token ? (
     <div className="page-container">
       <div className="page-header">
@@ -139,7 +148,7 @@ const CompanyInvLedger = () => {
                 </td>
                 <td style={{ textAlign: "right" }}>{getTaxAndTotal(customer).tax}</td>
                 <td style={{ textAlign: "right" }}>{parseFloat(customer.transportCharge).toFixed(2)}</td>
-                <td style={{ textAlign: "right" }}>{getTaxAndTotal(customer).total}</td>
+                <td style={{ textAlign: "right" }}>{parseFloat(adjustToNearestWhole(getTaxAndTotal(customer).total).roundedTotal).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
