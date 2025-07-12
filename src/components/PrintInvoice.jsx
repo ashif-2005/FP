@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { useLocation } from "react-router-dom";
-import './InvoiceForm.css'
+import "./InvoiceForm.css";
 
 const PrintInvoice = () => {
   const contentRef = useRef(null);
@@ -34,14 +34,13 @@ const PrintInvoice = () => {
     doc.save("template.pdf");
   };
 
-  let sgst = 0
-  let cgst = 0
-  let igst = 0
+  let sgst = 0;
+  let cgst = 0;
+  let igst = 0;
 
-  if(data?.stateCode != "33"){
+  if (data?.stateCode != "33") {
     igst = data?.totalAmount * 0.18;
-  }
-  else{
+  } else {
     sgst = data?.totalAmount * 0.09;
     cgst = data?.totalAmount * 0.09;
   }
@@ -124,10 +123,10 @@ const PrintInvoice = () => {
   }
 
   function adjustToNearestWhole(amount) {
-    console.log(amount)
+    console.log(amount);
     const rounded = Math.round(amount);
     const difference = (rounded - amount).toFixed(2);
-    console.log({rounded, difference})
+    console.log({ rounded, difference });
 
     return {
       roundedTotal: rounded,
@@ -141,20 +140,22 @@ const PrintInvoice = () => {
   data?.items.forEach((item) => {
     totalQuantity += parseFloat(item.quantity);
   });
-  console.log(amt)
+  console.log(amt);
 
-  const totalAdjusted = adjustToNearestWhole(data?.totalAmount + sgst + cgst + igst + parseInt(data?.transCharge));
-  console.log(totalAdjusted)
-  console.log(data?.totalAmount + sgst + cgst + igst)
+  const totalAdjusted = adjustToNearestWhole(
+    data?.totalAmount + sgst + cgst + igst + parseInt(data?.transCharge)
+  );
+  console.log(totalAdjusted);
+  console.log(data?.totalAmount + sgst + cgst + igst);
   const amountInWords = numberToWords(totalAdjusted.roundedTotal);
 
   const checkQuantity = (value) => {
     if (value % 1 !== 0) {
-      return true
-  } else {
-      return false
-  }
-  }
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <div className="page-container">
@@ -166,8 +167,12 @@ const PrintInvoice = () => {
             </div>
             <div className="company">
               <div className="original-copy">
-                <label className="original"><input type="checkbox"/> Original</label>
-                <label className="copy"><input type="checkbox" /> Copy</label>
+                <label className="original">
+                  <input type="checkbox" /> Original
+                </label>
+                <label className="copy">
+                  <input type="checkbox" /> Copy
+                </label>
               </div>
               <h1 className="company-name">FRIENDS PACKS</h1>
               <p className="company-address">
@@ -186,16 +191,12 @@ const PrintInvoice = () => {
           <div className="to-company">
             <div className="to-company-detail">
               <h1 className="to">To</h1>
-              <p className="to-company-name">
-                M/s: {data?.companyName}
-              </p>
+              <p className="to-company-name">M/s: {data?.companyName}</p>
               <p className="to-company-details">{data?.address}</p>
               <p className="to-company-details"> {data?.city}</p>
               <p className="to-company-details">{data?.state}</p>
               <div className="gst-code">
-                <p className="gst">
-                  GSTIN: {data?.gstno}
-                </p>
+                <p className="gst">GSTIN: {data?.gstno}</p>
                 <p className="code">STATE CODE: {data?.stateCode}</p>
               </div>
             </div>
@@ -212,9 +213,7 @@ const PrintInvoice = () => {
                 <div className="inv-details">
                   <p className="inv-po">
                     INVOICE NO:{" "}
-                    <span className="inv-no">
-                      {data?.invoiceNo}
-                    </span>
+                    <span className="inv-no">{data?.invoiceNo}</span>
                   </p>
                   <p className="inv-po">
                     INVOICE DATE:{" "}
@@ -223,8 +222,7 @@ const PrintInvoice = () => {
                 </div>
                 <div className="inv-details">
                   <p className="inv-po">
-                    PO NO:{" "}
-                    <span className="po-no">{data?.poNumber}</span>
+                    PO NO: <span className="po-no">{data?.poNumber}</span>
                   </p>
                   <p className="inv-po">
                     PO DATE: <span className="inv-po-date">{data?.poDate}</span>
@@ -232,12 +230,8 @@ const PrintInvoice = () => {
                 </div>
               </div>
               <div className="transport">
-                <p className="trans">
-                  Transpotation Mode: {data?.transport}
-                </p>
-                <p className="trans">
-                  Place Of Supply: {data?.place}
-                </p>
+                <p className="trans">Transpotation Mode: {data?.transport}</p>
+                <p className="trans">Place Of Supply: {data?.place}</p>
               </div>
             </div>
           </div>
@@ -248,52 +242,46 @@ const PrintInvoice = () => {
                   <th className="t-head-normal">S.No</th>
                   <th className="t-head-normal">HSN Code</th>
                   <th className="t-head-normal">DC No</th>
-                  <th className="t-head-desc">
-                    Description
-                  </th>
-                  <th className="t-head-normal">
-                    Quantity (Kgs/Nos)
-                  </th>
+                  <th className="t-head-desc">Description</th>
+                  <th className="t-head-normal">Quantity (Kgs/Nos)</th>
                   <th className="t-head-normal">Rate</th>
                   <th className="t-head-amount">Amount</th>
                 </tr>
               </thead>
               <tbody className="t-body">
-                {data?.items.map((item, index) => (
-                  <tr key={index}>
-                    <td className="t-data">{index + 1}</td>
-                    <td className="t-data">
-                      {item.hsnCode}
-                    </td>
-                    <td className="t-data">
-                      {item.dcNumber}
-                    </td>
-                    <td className="t-data">{item.itemName}</td>
-                    {item.quantity != 0 ? (
-                      <td className="t-data">
-                        {item.quantity}
-                      </td>
-                    ) : (
-                      <td className="t-data"></td>
-                    )}
-                    {item.price != 0 ? (
-                      <td className="t-data">
-                        {parseFloat(item.price).toFixed(2)}
-                      </td>
-                    ) : (
-                      <td className="t-data"></td>
-                    )}
-                    {item.price * item.quantity ? (
-                      <td className="t-data">
-                        {(
-                          parseFloat(item.price) * parseFloat(item.quantity)
-                        ).toFixed(2)}
-                      </td>
-                    ) : (
-                      <td className="t-data"></td>
-                    )}
-                  </tr>
-                ))}
+                {(() => {
+                  let sno = 1;
+                  return data?.items.map((item, index) => {
+                    const hideSno = item.hsnCode === "" && item.dcNumber === "";
+
+                    return (
+                      <tr key={index}>
+                        <td className="t-data">{!hideSno ? sno++ : ""}</td>
+                        <td className="t-data">{item.hsnCode}</td>
+                        <td className="t-data">{item.dcNumber}</td>
+                        <td className="t-data">{item.itemName}</td>
+
+                        <td className="t-data">
+                          {item.quantity !== 0 ? item.quantity : ""}
+                        </td>
+                        <td className="t-data">
+                          {item.price !== 0
+                            ? parseFloat(item.price).toFixed(2)
+                            : ""}
+                        </td>
+                        <td className="t-data">
+                          {item.price * item.quantity
+                            ? (
+                                parseFloat(item.price) *
+                                parseFloat(item.quantity)
+                              ).toFixed(2)
+                            : ""}
+                        </td>
+                      </tr>
+                    );
+                  });
+                })()}
+
                 {Array.from({ length: 14 - data?.items.length }, (_, index) => (
                   <tr key={index}>
                     <td className="t-data">&nbsp;</td>
@@ -369,7 +357,9 @@ const PrintInvoice = () => {
               <p className="space">Receiver Signature</p>
             </div>
             <div className="terms">
-              <u><p>Terms & Condition:</p></u>
+              <u>
+                <p>Terms & Condition:</p>
+              </u>
               <p>* Goods once sold cannot be taken back</p>
               <p>
                 * The payment should be made only way of crossed Draft/ Cheque

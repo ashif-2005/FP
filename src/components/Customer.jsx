@@ -161,7 +161,7 @@ const Customers = () => {
               <th>State</th>
               <th>GSTIN</th>
               <th>State Code</th>
-              <th>Opening Balance</th>
+              <th style={{ textAlign: "right" }}>Opening Balance</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -174,7 +174,7 @@ const Customers = () => {
                 <td>{customer.state}</td>
                 <td>{customer.gstin}</td>
                 <td>{customer.statecode}</td>
-                <td>{parseFloat(customer.op_balance).toFixed(2)}</td>
+                <td style={{ textAlign: "right" }}>{parseFloat(customer.op_balance).toFixed(2)}</td>
                 <td className="actions">
                   <button
                     className="edit-button"

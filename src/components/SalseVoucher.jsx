@@ -124,6 +124,7 @@ const SalseVoucher = () => {
       amount: 0,
     });
     setIsAddModalOpen(false);
+    window.location.reload();
   };
 
   const handleEdit = (customer) => {

@@ -213,6 +213,7 @@ const Invoice = () => {
     }));
     // console.log(customer.invoiceDate.split("T")[0])
     setIsEditModalOpen(true);
+    window.location.reload();
   };
 
   const handleUpdate = async (e) => {
@@ -486,9 +487,9 @@ const Invoice = () => {
                     )
                     .toFixed(2)}
                 </td>
-                <td style={{ textAlign: "right" }}>{getTaxAndTotal(customer).tax}</td>
-                <td style={{ textAlign: "right" }}>{parseFloat(customer.transportCharge).toFixed(2)}</td>
-                <td style={{ textAlign: "right" }}>{parseFloat(adjustToNearestWhole(getTaxAndTotal(customer).total).roundedTotal).toFixed(2)}</td>
+                <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>{getTaxAndTotal(customer).tax}</td>
+                <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>{parseFloat(customer.transportCharge).toFixed(2)}</td>
+                <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>{parseFloat(adjustToNearestWhole(getTaxAndTotal(customer).total).roundedTotal).toFixed(2)}</td>
                 {/* <td>1000.00</td> */}
                 <td className="actions">
                   <button
