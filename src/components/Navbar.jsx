@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Users,
@@ -9,56 +9,115 @@ import {
   Notebook,
   Boxes,
   ClipboardList,
-  DollarSign,
-  Wallet
+  Wallet,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 import logo from '../assets/logoWhite.png';
 
+const menuStructure = [
+  {
+    label: 'Party',
+    children: [
+      { label: 'Sales Party', icon: Users, path: '/sales-party' },
+      { label: 'Purchase Party', icon: Users, path: '/purchase-party' },
+    ]
+  },
+  {
+    label: 'Item',
+    children: [
+      { label: 'Item', icon: Package, path: '/item' }
+    ]
+  },
+  {
+    label: 'Stock',
+    children: [
+      { label: 'Stock', icon: Boxes, path: '/stock' }
+    ]
+  },
+  {
+    label: 'Delivery Challan',
+    children: [
+      { label: 'Delivery Challan', icon: FileText, path: '/dc' }
+    ]
+  },
+  {
+    label: 'Invoice',
+    children: [
+      { label: 'Sales Invoice', icon: Receipt, path: '/invoice' },
+      { label: 'Purchase Invoice', icon: Receipt, path: '/purchase-invoice' }
+    ]
+  },
+  {
+    label: 'Voucher',
+    children: [
+      { label: 'Sales Voucher', icon: Wallet, path: '/salse-voucher' },
+      { label: 'Purchase Voucher', icon: Wallet, path: '/purchase-voucher' }
+    ]
+  },
+  {
+    label: 'Ledger',
+    children: [
+      { label: 'Sales Invoice Ledger', icon: Notebook, path: '/inv-ledger' },
+      { label: 'Purchase Invoice Ledger', icon: Notebook, path: '/purchase-inv-ledger' }
+    ]
+  },
+  {
+    label: 'Party Ledger',
+    children: [
+      { label: 'Sales Party Ledger', icon: ClipboardList, path: '/salse-party-ledger' },
+      { label: 'Purchase Party Ledger', icon: ClipboardList, path: '/purchase-party-ledger' }
+    ]
+  }
+];
+
 const Sidebar = () => {
   const navigate = useNavigate();
-  const menuItems = [
-    { icon: Users, label: 'Customers', path: '/customer' },
-    { icon: Package, label: 'Item', path: '/item' },
-    { icon: Boxes, label: 'Stock', path: '/stock' },
-    { icon: FileText, label: 'Delivery Challan', path: '/dc' },
-    { icon: Receipt, label: 'Invoice', path: '/invoice' },
-    { icon: Notebook, label: 'Invoice Ledger', path: '/inv-ledger' },
-    { icon: Wallet, label: 'Sales Voucher', path: '/salse-voucher' },
-    { icon: ClipboardList, label: 'Sales Party Ledger', path: '/salse-party-ledger' }
-  ];
+  const [openMenuLabel, setOpenMenuLabel] = useState(null);
 
-  const handelLogo = () => {
-    navigate(`/`)
-  }
+  const toggleMenu = (label) => {
+    setOpenMenuLabel(prevLabel => prevLabel === label ? null : label);
+  };
 
-  const handelLogout = () => {
-    console.log("Logout")
+  const handleLogoClick = () => navigate(`/`);
+
+  const handleLogout = () => {
     document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    location.reload();  
-  }
+    location.reload();
+  };
 
   return (
     <div className="sidebar">
-      <div className="sidebar-header" onClick={handelLogo}>
-      <img src={logo} alt="Logo"  class="logo" />
+      <div className="sidebar-header" onClick={handleLogoClick}>
+        <img src={logo} alt="Logo" className="logo" />
       </div>
+
       <nav className="nav-links">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              `nav-link ${isActive ? 'active' : ''}`
-            }
-          >
-            <item.icon size={20} />
-            <span>{item.label}</span>
-          </NavLink>
+        {menuStructure.map((group) => (
+          <div key={group.label} className="menu-group">
+            <div className="nav-link expandable" onClick={() => toggleMenu(group.label)}>
+              {openMenuLabel === group.label ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+              <span>{group.label}</span>
+            </div>
+            {openMenuLabel === group.label && (
+              <div className="submenu">
+                {group.children.map(({ label, icon: Icon, path }) => (
+                  <NavLink
+                    key={label}
+                    to={path}
+                    className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  >
+                    <Icon size={18} /><span>{label}</span>
+                  </NavLink>
+                ))}
+              </div>
+            )}
+          </div>
         ))}
       </nav>
-      <button className="logout-button" onClick={handelLogout}>
-        <LogOut size={20} />
-        <span>Logout</span>
+
+      <button className="logout-button" onClick={handleLogout}>
+        <LogOut size={20} /><span>Logout</span>
       </button>
     </div>
   );

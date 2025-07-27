@@ -3,7 +3,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
 import Login from "./Login";
 
-const Customers = () => {
+const PurchaseParty = () => {
   const [customers, setCustomers] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -15,8 +15,8 @@ const Customers = () => {
     state: "",
     gstin: "",
     statecode: "",
-    op_balance: 0,
-    balance: 0
+    fp_balance: 0,
+    purchase_balance: 0
   });
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
@@ -55,7 +55,7 @@ const Customers = () => {
   const getCustomer = async () => {
     try {
       const res = await axios.get(
-        `${url}/customer/get?page=${page}&limit=${limit}`
+        `${url}/purchase-party/get?page=${page}&limit=${limit}`
       );
       setCustomers(res.data.data);
       setTotalPages(res.data.totalPages);
@@ -82,7 +82,7 @@ const Customers = () => {
       ...formData,
     };
     setCustomers((prev) => [...prev, newCustomer]);
-    const response = await axios.post(`${url}/customer/add`, formData, {
+    const response = await axios.post(`${url}/purchase-party/add`, formData, {
       headers: { "Content-Type": "application/json" },
     });
     setFormData({
@@ -92,8 +92,8 @@ const Customers = () => {
       state: "",
       gstin: "",
       statecode: "",
-      op_balance: 0,
-      balance: 0
+      fp_balance: 0,
+      purchase_balance: 0,
     });
     setIsAddModalOpen(false);
   };
@@ -115,7 +115,7 @@ const Customers = () => {
     );
     // console.log(currentCustomer._id)
     const response = await axios.put(
-      `${url}/customer/edit/${currentCustomer._id}`,
+      `${url}/purchase-party/edit/${currentCustomer._id}`,
       formData,
       {
         headers: { "Content-Type": "application/json" },
@@ -128,8 +128,8 @@ const Customers = () => {
       state: "",
       gstin: "",
       statecode: "",
-      op_balance: 0,
-      balance: 0
+      fp_balance: 0,
+      purchase_balance: 0,
     });
     setIsEditModalOpen(false);
   };
@@ -137,7 +137,7 @@ const Customers = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
-      const response = await axios.delete(`${url}/customer/delete/${id}`);
+      const response = await axios.delete(`${url}/purchase-party/delete/${id}`);
     }
   };
 
@@ -175,7 +175,7 @@ const Customers = () => {
                 <td>{customer.gstin}</td>
                 <td>{customer.statecode}</td>
                 <td style={{ textAlign: "right" }}>
-                  {parseFloat(customer.op_balance).toFixed(2)}
+                  {parseFloat(customer.fp_balance).toFixed(2)}
                 </td>
                 <td className="actions">
                   <button
@@ -293,8 +293,8 @@ const Customers = () => {
               <div className="form-group">
                 <label>Opening Balance:</label>
                 <input
-                  name="op_balance"
-                  value={formData.op_balance}
+                  name="fp_balance"
+                  value={formData.fp_balance}
                   onChange={handleInputChange}
                   required
                 />
@@ -302,8 +302,8 @@ const Customers = () => {
               <div className="form-group">
                 <label>Balance:</label>
                 <input
-                  name="balance"
-                  value={formData.balance}
+                  name="purchase_balance"
+                  value={formData.purchase_balance}
                   onChange={handleInputChange}
                   required
                 />
@@ -324,8 +324,8 @@ const Customers = () => {
                       state: "",
                       gstin: "",
                       statecode: "",
-                      op_balance: 0,
-                      balance: 0
+                      fp_balance: 0,
+                      purchase_balance: 0,
                     });
                   }}
                 >
@@ -402,8 +402,8 @@ const Customers = () => {
                 <div className="form-group">
                   <label>Opening Balance:</label>
                   <input
-                    name="op_balance"
-                    value={formData.op_balance}
+                    name="fp_balance"
+                    value={formData.fp_balance}
                     onChange={handleInputChange}
                     required
                   />
@@ -412,8 +412,8 @@ const Customers = () => {
               <div className="form-group">
                 <label>Balance:</label>
                 <input
-                  name="balance"
-                  value={formData.balance}
+                  name="purchase_balance"
+                  value={formData.purchase_balance}
                   onChange={handleInputChange}
                   required
                 />
@@ -434,8 +434,8 @@ const Customers = () => {
                       state: "",
                       gstin: "",
                       statecode: "",
-                      op_balance: 0,
-                      balance: 0
+                      fp_balance: 0,
+                      purchase_balance: 0
                     });
                   }}
                 >
@@ -455,4 +455,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default PurchaseParty;

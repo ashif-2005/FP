@@ -6,7 +6,7 @@ import { saveAs } from "file-saver";
 import "./invoice.css";
 import Login from "./Login";
 
-const Invoice = () => {
+const  PurchaseInvoice = () => {
   const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
   const [data, setData] = useState([]);
@@ -16,17 +16,8 @@ const Invoice = () => {
   const [formData, setFormData] = useState({
     invoiceNumber: "",
     invoiceDate: new Date().toISOString().split("T")[0],
-    poNumber: "",
-    poDate: "",
     toCompany: "",
-    address: "",
-    city: "",
-    state: "",
     gstNumber: "",
-    stateCode: "",
-    transport: "",
-    place: "",
-    transportCharge: 0,
     items: [],
   });
   const [page, setPage] = useState(1);
@@ -55,7 +46,6 @@ const Invoice = () => {
   useEffect(() => {
     const tkn = getToken()
     SetToken(tkn)
-    // console.log(tkn)
     getInvoice();
     getCustomer();
   }, []);
@@ -67,7 +57,7 @@ const Invoice = () => {
   const getInvoice = async () => {
     try {
       const res = await axios.get(
-        `${url}/invoice/get?page=${page}&limit=${limit}`
+        `${url}/purchase-invoice/get?page=${page}&limit=${limit}`
       );
       setCustomers(res.data.data);
       setTotalPages(res.data.totalPages);
@@ -80,7 +70,7 @@ const Invoice = () => {
   const getCustomer = async () => {
     try {
       const response = await axios.get(
-        `${url}/customer/get-all`
+        `${url}/purchase-party/get-all`
       );
       setData(response.data);
     } catch (err) {
@@ -91,26 +81,12 @@ const Invoice = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (name === "poNumber") {
-      if (value != "") {
-        setFormData((prev) => ({
-          ...prev,
-          poDate: new Date().toISOString().split("T")[0],
-        }));
-      }
-    }
     if (name === "toCompany") {
       const companyDetails = data.find((company) => company.name === value);
-      console.log(value);
-      console.log(companyDetails);
       if (companyDetails) {
         setFormData((prev) => ({
           ...prev,
-          address: companyDetails.address,
-          city: companyDetails.city,
-          state: companyDetails.state,
-          gstNumber: companyDetails.gstin,
-          stateCode: companyDetails.statecode,
+          gstNumber: companyDetails.gstin
         }));
       }
     }
@@ -157,7 +133,7 @@ const Invoice = () => {
       0
     );
     const response = await axios.post(
-      `${url}/invoice/add`,
+      `${url}/purchase-invoice/add`,
       formData,
       {
         headers: { "Content-Type": "application/json" },
@@ -166,41 +142,11 @@ const Invoice = () => {
     setFormData({
       invoiceNumber: "",
       invoiceDate: new Date().toISOString().split("T")[0],
-      poNumber: "",
-      poDate: "",
       toCompany: "",
-      address: "",
-      city: "",
-      state: "",
       gstNumber: "",
-      stateCode: "",
-      transport: "",
-      place: "",
-      transportCharge: 0,
       items: [],
     });
     setIsAddModalOpen(false);
-    navigate(`/print`, {
-      state: {
-        companyName: newCustomer.toCompany,
-        address: newCustomer.address,
-        city: newCustomer.city,
-        state: newCustomer.state,
-        gstno: newCustomer.gstNumber,
-        stateCode: newCustomer.stateCode,
-        invoiceNo: newCustomer.invoiceNumber,
-        poNumber: newCustomer.poNumber,
-        poDate: newCustomer.poDate
-          ? newCustomer.poDate.substring(0, 10).split("-").reverse().join("/")
-          : "",
-        invoiceDate: newCustomer.invoiceDate.split("-").reverse().join("/"),
-        transport: newCustomer.transport,
-        place: newCustomer.place,
-        items: newCustomer.items,
-        totalAmount: total,
-        transCharge: newCustomer.transportCharge,
-      },
-    });
   };
 
   const handleEdit = (customer) => {
@@ -211,9 +157,7 @@ const Invoice = () => {
       invoiceDate: customer.invoiceDate.split("T")[0],
       poDate: customer.poDate ? customer.poDate.split("T")[0] : "",
     }));
-    // console.log(customer.invoiceDate.split("T")[0])
     setIsEditModalOpen(true);
-    window.location.reload();
   };
 
   const handleUpdate = async (e) => {
@@ -226,7 +170,7 @@ const Invoice = () => {
       )
     );
     const response = await axios.put(
-      `${url}/invoice/edit/${currentCustomer._id}`,
+      `${url}/purchase-invoice/edit/${currentCustomer._id}`,
       formData,
       {
         headers: { "Content-Type": "application/json" },
@@ -235,17 +179,8 @@ const Invoice = () => {
     setFormData({
       invoiceNumber: "",
       invoiceDate: new Date().toISOString().split("T")[0],
-      poNumber: "",
-      poDate: "",
       toCompany: "",
-      address: "",
-      city: "",
-      state: "",
       gstNumber: "",
-      stateCode: "",
-      transport: "",
-      place: "",
-      transportCharge: 0,
       items: [],
     });
     setIsEditModalOpen(false);
@@ -255,42 +190,13 @@ const Invoice = () => {
     if (window.confirm("Are you sure you want to delete this Invoice?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
       const response = await axios.delete(
-        `${url}/invoice/delete/${id}`
+        `${url}/purchase-invoice/delete/${id}`
       );
     }
   };
 
   const handleClick = (newCustomer) => {
-    const total = newCustomer.items.reduce(
-      (sum, item) =>
-        sum + ((parseFloat(item.quantity) || 0) * parseFloat(item.price) || 0),
-      0
-    );
-    navigate(`/print`, {
-      state: {
-        companyName: newCustomer.toCompany,
-        address: newCustomer.address,
-        city: newCustomer.city,
-        state: newCustomer.state,
-        gstno: newCustomer.gstNumber,
-        stateCode: newCustomer.stateCode,
-        invoiceNo: newCustomer.invoiceNumber,
-        poNumber: newCustomer.poNumber,
-        poDate: newCustomer.poDate
-          ? newCustomer.poDate.substring(0, 10).split("-").reverse().join("/")
-          : "",
-        invoiceDate: newCustomer.invoiceDate
-          .substring(0, 10)
-          .split("-")
-          .reverse()
-          .join("/"),
-        transport: newCustomer.transport,
-        place: newCustomer.place,
-        items: newCustomer.items,
-        totalAmount: total,
-        transCharge: newCustomer.transportCharge,
-      },
-    });
+    //add some thing...
   };
 
   const getTaxAndTotal = (customer) => {
@@ -306,8 +212,7 @@ const Invoice = () => {
     return {
       total: parseFloat(
         parseFloat(total) +
-          parseFloat(tax) +
-          parseFloat(customer.transportCharge)
+          parseFloat(tax)
       ).toFixed(2),
       tax,
     };
@@ -320,16 +225,14 @@ const Invoice = () => {
       "To Company",
       "Amount",
       "Tax",
-      "Transport Charge",
       "Total",
     ];
 
-    const inv = await axios.get(`${url}/invoice/get-all`);
+    const inv = await axios.get(`${url}/purchase-invoice/get-all`);
     const data = inv.data;
 
     let totalAmount = 0;
     let totalTax = 0;
-    let totalTransport = 0;
     let totalGrand = 0;
 
     const rows = data.map((customer) => {
@@ -341,12 +244,10 @@ const Invoice = () => {
       );
 
       const { tax, total } = getTaxAndTotal(customer);
-      const transport = parseFloat(customer.transportCharge) || 0;
 
       // Accumulate totals
       totalAmount += amount;
       totalTax += parseFloat(tax) || 0;
-      totalTransport += transport;
       totalGrand += parseFloat(total) || 0;
 
       return [
@@ -355,7 +256,6 @@ const Invoice = () => {
         customer.toCompany,
         amount.toFixed(2),
         parseFloat(tax).toFixed(2),
-        transport.toFixed(2),
         parseFloat(total).toFixed(2),
       ];
     });
@@ -370,7 +270,6 @@ const Invoice = () => {
       "TOTALS",
       totalAmount.toFixed(2),
       totalTax.toFixed(2),
-      totalTransport.toFixed(2),
       totalGrand.toFixed(2),
     ];
 
@@ -381,25 +280,6 @@ const Invoice = () => {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     saveAs(blob, "invoices.csv");
   };
-
-  const handleItem = (name) => {
-    console.log(name)
-    const companyDetails = data.find((company) => company.name === name);
-      console.log(name);
-      console.log(companyDetails);
-      if (companyDetails) {
-        setFormData((prev) => ({
-          ...prev,
-          toCompany: name,
-          address: companyDetails.address,
-          city: companyDetails.city,
-          state: companyDetails.state,
-          gstNumber: companyDetails.gstin,
-          stateCode: companyDetails.statecode,
-        }));
-      }
-    // setFormData({toCompany: name});
-  }
 
   const adjustToNearestWhole = (amount) => {
     const rounded = Math.round(amount);
@@ -413,7 +293,7 @@ const Invoice = () => {
   return (
     token ? <div className="page-container">
       <div className="page-header">
-        <h1 className="page-title">Invoice</h1>
+        <h1 className="page-title">Purchase Invoice</h1>
         <div className="btn">
           <button onClick={exportToCSV} className="add-button">
             Export CSV
@@ -424,24 +304,15 @@ const Invoice = () => {
               setFormData({
                 invoiceNumber: ivnlen + 1,
                 invoiceDate: new Date().toISOString().split("T")[0],
-                poNumber: "",
-                poDate: "",
                 toCompany: "",
-                address: "",
-                city: "",
-                state: "",
                 gstNumber: "",
-                stateCode: "",
-                transport: "",
-                place: "",
-                transportCharge: 0,
                 items: [],
               });
               setIsAddModalOpen(true);
             }}
           >
             <Plus size={20} />
-            Add Invoice
+            Add Purchase Invoice
           </button>
         </div>
       </div>
@@ -451,11 +322,10 @@ const Invoice = () => {
           <thead>
             <tr>
               <th>Inv No</th>
-              <th>Invoice Date</th>
-              <th>To Company</th>
+              <th>Purchase Invoice Date</th>
+              <th>Company</th>
               <th style={{ textAlign: "right" }}>Amount</th>
               <th style={{ textAlign: "right" }}>Tax</th>
-              <th style={{ textAlign: "right" }}>Transport Charge</th>
               <th style={{ textAlign: "right" }}>Total</th>
               <th>Actions</th>
             </tr>
@@ -488,7 +358,6 @@ const Invoice = () => {
                     .toFixed(2)}
                 </td>
                 <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>{getTaxAndTotal(customer).tax}</td>
-                <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>{parseFloat(customer.transportCharge).toFixed(2)}</td>
                 <td onClick={() => handleClick(customer)} style={{ textAlign: "right" }}>{parseFloat(adjustToNearestWhole(getTaxAndTotal(customer).total).roundedTotal).toFixed(2)}</td>
                 {/* <td>1000.00</td> */}
                 <td className="actions">
@@ -569,24 +438,6 @@ const Invoice = () => {
                   required
                 />
               </div>
-              <div className="form-group">
-                <label>PO Number:</label>
-                <input
-                  type="text"
-                  name="poNumber"
-                  value={formData.poNumber}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>PO Date:</label>
-                <input
-                  type="date"
-                  name="poDate"
-                  value={formData.poDate}
-                  onChange={handleInputChange}
-                />
-              </div>
               <div className="form-group" id="comp">
                 <label>To Company:</label>
                 <select
@@ -604,36 +455,6 @@ const Invoice = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label>Address:</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>City:</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>State:</label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
                 <label>GST Number:</label>
                 <input
                   type="text"
@@ -641,43 +462,6 @@ const Invoice = () => {
                   value={formData.gstNumber}
                   onChange={handleInputChange}
                   required
-                />
-              </div>
-              <div className="form-group">
-                <label>State Code:</label>
-                <input
-                  type="text"
-                  name="stateCode"
-                  value={formData.stateCode}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Transport:</label>
-                <input
-                  type="text"
-                  name="transport"
-                  value={formData.transport}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Place:</label>
-                <input
-                  type="text"
-                  name="place"
-                  value={formData.place}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Transport Chrge:</label>
-                <input
-                  type="text"
-                  name="transportCharge"
-                  value={formData.transportCharge}
-                  onChange={handleInputChange}
                 />
               </div>
               <h3>Items</h3>
@@ -748,17 +532,8 @@ const Invoice = () => {
                     setFormData({
                       invoiceNumber: "",
                       invoiceDate: new Date().toISOString().split("T")[0],
-                      poNumber: "",
-                      poDate: new Date().toISOString().split("T")[0],
                       toCompany: "",
-                      address: "",
-                      city: "",
-                      state: "",
                       gstNumber: "",
-                      stateCode: "",
-                      transport: "",
-                      place: "",
-                      transportCharge: 0,
                       items: [],
                     });
                   }}
@@ -798,59 +573,11 @@ const Invoice = () => {
                 />
               </div>
               <div className="form-group">
-                <label>PO Number:</label>
-                <input
-                  type="text"
-                  name="poNumber"
-                  value={formData.poNumber}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>PO Date:</label>
-                <input
-                  type="date"
-                  name="poDate"
-                  value={formData.poDate}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
                 <label>To Company:</label>
                 <input
                   type="text"
                   name="toCompany"
                   value={formData.toCompany}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Address:</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>City:</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>State:</label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
                   onChange={handleInputChange}
                   required
                 />
@@ -863,43 +590,6 @@ const Invoice = () => {
                   value={formData.gstNumber}
                   onChange={handleInputChange}
                   required
-                />
-              </div>
-              <div className="form-group">
-                <label>State Code:</label>
-                <input
-                  type="text"
-                  name="stateCode"
-                  value={formData.stateCode}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Transport:</label>
-                <input
-                  type="text"
-                  name="transport"
-                  value={formData.transport}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Place:</label>
-                <input
-                  type="text"
-                  name="place"
-                  value={formData.place}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Transport Chrge:</label>
-                <input
-                  type="text"
-                  name="transportCharge"
-                  value={formData.transportCharge}
-                  onChange={handleInputChange}
                 />
               </div>
               <h3>Items</h3>
@@ -969,17 +659,8 @@ const Invoice = () => {
                     setFormData({
                       invoiceNumber: "",
                       invoiceDate: new Date().toISOString().split("T")[0],
-                      poNumber: "",
-                      poDate: new Date().toISOString().split("T")[0],
                       toCompany: "",
-                      address: "",
-                      city: "",
-                      state: "",
                       gstNumber: "",
-                      stateCode: "",
-                      transport: "",
-                      place: "",
-                      transportCharge: 0,
                       items: [],
                     });
                   }}
@@ -995,4 +676,4 @@ const Invoice = () => {
   );
 };
 
-export default Invoice;
+export default PurchaseInvoice;

@@ -1,26 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
 import Login from "./Login";
 
-const Customers = () => {
+const PurchaseVoucher = () => {
   const [customers, setCustomers] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState(null);
   const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    city: "",
-    state: "",
-    gstin: "",
-    statecode: "",
-    op_balance: 0,
-    balance: 0
+    voucherNum: "",
+    voucherDate: new Date().toISOString().split("T")[0],
+    partyCompany: "",
+    paymentMode: "NA",
+    bank: "",
+    chequeNum: "",
+    amount: 0,
   });
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
   const [totalPages, setTotalPages] = useState(1);
+  const [voucherLen, setVoucherLen] = useState(0);
+  const [showSuggestions, setShowSuggestions] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [data, setData] = useState([]);
+  const paymentOptions = ["Cheque", "NEFT/RTGS", "Cash"];
 
   const url = import.meta.env.VITE_BACKEND_URL;
 
@@ -46,19 +50,30 @@ const Customers = () => {
 
   useEffect(() => {
     getCustomer();
+    getVoucher();
   }, []);
 
   useEffect(() => {
-    getCustomer();
+    getVoucher();
   }, [page]);
 
-  const getCustomer = async () => {
+  const getVoucher = async () => {
     try {
       const res = await axios.get(
-        `${url}/customer/get?page=${page}&limit=${limit}`
+        `${url}/purchase-voucher/get?page=${page}&limit=${limit}`
       );
       setCustomers(res.data.data);
       setTotalPages(res.data.totalPages);
+      setVoucherLen(res.data.total);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getCustomer = async () => {
+    try {
+      const response = await axios.get(`${url}/purchase-party/get-all`);
+      setData(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -73,6 +88,20 @@ const Customers = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "partyCompany") {
+      if (value.trim() === "") {
+        setFilteredItems([]);
+        setShowSuggestions(false);
+        return;
+      }
+      const filtered = data.filter((item) =>
+        item.name.toLowerCase().includes(value.toLowerCase())
+      );
+      // console.log(filtered)
+      setFilteredItems(filtered);
+      setShowSuggestions(true);
+      console.log(showSuggestions);
+    }
   };
 
   const handleAdd = async (e) => {
@@ -82,18 +111,17 @@ const Customers = () => {
       ...formData,
     };
     setCustomers((prev) => [...prev, newCustomer]);
-    const response = await axios.post(`${url}/customer/add`, formData, {
+    const response = await axios.post(`${url}/purchase-voucher/add`, formData, {
       headers: { "Content-Type": "application/json" },
     });
     setFormData({
-      name: "",
-      address: "",
-      city: "",
-      state: "",
-      gstin: "",
-      statecode: "",
-      op_balance: 0,
-      balance: 0
+      voucherNum: "",
+      voucherDate: new Date().toISOString().split("T")[0],
+      partyCompany: "",
+      paymentMode: "NA",
+      bank: "",
+      chequeNum: "",
+      amount: 0,
     });
     setIsAddModalOpen(false);
   };
@@ -115,39 +143,61 @@ const Customers = () => {
     );
     // console.log(currentCustomer._id)
     const response = await axios.put(
-      `${url}/customer/edit/${currentCustomer._id}`,
+      `${url}/purchase-voucher/edit/${currentCustomer._id}`,
       formData,
       {
         headers: { "Content-Type": "application/json" },
       }
     );
     setFormData({
-      name: "",
-      address: "",
-      city: "",
-      state: "",
-      gstin: "",
-      statecode: "",
-      op_balance: 0,
-      balance: 0
+      voucherNum: "",
+      voucherDate: new Date().toISOString().split("T")[0],
+      partyCompany: "",
+      paymentMode: "NA",
+      bank: "",
+      chequeNum: "",
+      amount: 0,
     });
     setIsEditModalOpen(false);
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this customer?")) {
+    if (window.confirm("Are you sure you want to delete this voucher?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
-      const response = await axios.delete(`${url}/customer/delete/${id}`);
+      const response = await axios.delete(`${url}/purchase-voucher/delete/${id}`);
     }
   };
+
+  const handleItem = (name) => {
+    setFormData((prev) => ({ ...prev, partyCompany: name }));
+    setShowSuggestions(false);
+  };
+
+  useEffect(() => {
+    console.log("Suggestions visible?", showSuggestions);
+  }, [showSuggestions]);
 
   return token ? (
     <div className="page-container">
       <div className="page-header">
-        <h1 className="page-title">Customers</h1>
-        <button className="add-button" onClick={() => setIsAddModalOpen(true)}>
+        <h1 className="page-title">Voucher</h1>
+        <button
+          className="add-button"
+          onClick={() => {
+            setIsAddModalOpen(true);
+            setFormData({
+              voucherNum: voucherLen + 1,
+              voucherDate: new Date().toISOString().split("T")[0],
+              partyCompany: "",
+              paymentMode: "NA",
+              bank: "",
+              chequeNum: "",
+              amount: 0,
+            });
+          }}
+        >
           <Plus size={20} />
-          Add Customer
+          Add Voucher
         </button>
       </div>
 
@@ -155,28 +205,32 @@ const Customers = () => {
         <table className="data-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Address</th>
-              <th>City</th>
-              <th>State</th>
-              <th>GSTIN</th>
-              <th>State Code</th>
-              <th style={{ textAlign: "right" }}>Opening Balance</th>
+              <th>Voucher Number</th>
+              <th>Voucher Date</th>
+              <th>Party Name</th>
+              <th>paymentMode</th>
+              <th>Bank</th>
+              <th>cheque Number</th>
+              <th>amount</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {customers.map((customer) => (
               <tr key={customer.id}>
-                <td>{customer.name}</td>
-                <td>{customer.address}</td>
-                <td>{customer.city}</td>
-                <td>{customer.state}</td>
-                <td>{customer.gstin}</td>
-                <td>{customer.statecode}</td>
-                <td style={{ textAlign: "right" }}>
-                  {parseFloat(customer.op_balance).toFixed(2)}
+                <td>{customer.voucherNum}</td>
+                <td>
+                  {customer.voucherDate
+                    .substring(0, 10)
+                    .split("-")
+                    .reverse()
+                    .join("/")}
                 </td>
+                <td>{customer.partyCompany}</td>
+                <td>{customer.paymentMode}</td>
+                <td>{customer.bank}</td>
+                <td>{customer.chequeNum}</td>
+                <td>{customer.amount}</td>
                 <td className="actions">
                   <button
                     className="edit-button"
@@ -231,79 +285,81 @@ const Customers = () => {
       {isAddModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Add New Customer</h2>
+            <h2>Add New Voucher</h2>
             <form onSubmit={handleAdd}>
               <div className="form-group">
-                <label>Name:</label>
+                <label>Voucher Number:</label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="voucherNum"
+                  value={formData.voucherNum}
                   onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="form-group">
-                <label>Address:</label>
+                <label>Voucher Date:</label>
                 <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
+                  type="date"
+                  name="voucherDate"
+                  value={formData.voucherDate}
                   onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="form-group">
-                <label>City:</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
+                <label>Party Name:</label>
+                <select
+                  name="partyCompany"
+                  value={formData.partyCompany}
                   onChange={handleInputChange}
                   required
+                >
+                  <option value="">-- Select Party Name --</option>
+                  {data.map((mode) => (
+                    <option key={mode._id} value={mode.name}>
+                      {mode.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Payment Mode:</label>
+                <select
+                  name="paymentMode"
+                  value={formData.paymentMode}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">-- Select Payment Mode --</option>
+                  {paymentOptions.map((mode) => (
+                    <option key={mode} value={mode}>
+                      {mode}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Bank:</label>
+                <input
+                  name="bank"
+                  value={formData.bank}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="form-group">
-                <label>State:</label>
+                <label>Cheque Number:</label>
                 <input
-                  name="state"
-                  value={formData.state}
+                  name="chequeNum"
+                  value={formData.chequeNum}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
               <div className="form-group">
-                <label>GSTIN:</label>
+                <label>Amount:</label>
                 <input
-                  name="gstin"
-                  value={formData.gstin}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>State Code:</label>
-                <input
-                  name="statecode"
-                  value={formData.statecode}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Opening Balance:</label>
-                <input
-                  name="op_balance"
-                  value={formData.op_balance}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Balance:</label>
-                <input
-                  name="balance"
-                  value={formData.balance}
+                  name="amount"
+                  value={formData.amount}
                   onChange={handleInputChange}
                   required
                 />
@@ -318,14 +374,13 @@ const Customers = () => {
                   onClick={() => {
                     setIsAddModalOpen(false);
                     setFormData({
-                      name: "",
-                      address: "",
-                      city: "",
-                      state: "",
-                      gstin: "",
-                      statecode: "",
-                      op_balance: 0,
-                      balance: 0
+                      voucherNum: "",
+                      voucherDate: new Date().toISOString().split("T")[0],
+                      partyCompany: "",
+                      paymentMode: "",
+                      bank: "",
+                      chequeNum: "",
+                      amount: 0,
                     });
                   }}
                 >
@@ -341,86 +396,82 @@ const Customers = () => {
       {isEditModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Edit Customer</h2>
+            <h2>Edit Voucher</h2>
             <form onSubmit={handleUpdate}>
               <div className="form-group">
-                <label>Name:</label>
+                <label>Voucher Number:</label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="voucherNum"
+                  value={formData.voucherNum}
                   onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="form-group">
-                <label>Address:</label>
+                <label>Voucher Date:</label>
+                <input
+                  type="date"
+                  name="voucherDate"
+                  value={formData.voucherDate}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Party Name:</label>
                 <input
                   type="text"
-                  name="address"
-                  value={formData.address}
+                  name="partyCompany"
+                  value={formData.partyCompany}
                   onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="form-group">
-                <label>City:</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
+                <label>Payment Mode:</label>
+                <select
+                  name="paymentMode"
+                  value={formData.paymentMode}
                   onChange={handleInputChange}
                   required
+                >
+                  <option value="">-- Select Payment Mode --</option>
+                  {paymentOptions.map((mode) => (
+                    <option key={mode} value={mode}>
+                      {mode}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Bank:</label>
+                <input
+                  name="bank"
+                  value={formData.bank}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="form-group">
-                <label>State:</label>
+                <label>Cheque Number:</label>
                 <input
-                  name="state"
-                  value={formData.state}
+                  name="chequeNum"
+                  value={formData.chequeNum}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
               <div className="form-group">
-                <label>GSTIN:</label>
+                <label>Amount:</label>
                 <input
-                  name="gstin"
-                  value={formData.gstin}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>State Code:</label>
-                <input
-                  name="statecode"
-                  value={formData.statecode}
-                  onChange={handleInputChange}
-                  required
-                />
-                <div className="form-group">
-                  <label>Opening Balance:</label>
-                  <input
-                    name="op_balance"
-                    value={formData.op_balance}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Balance:</label>
-                <input
-                  name="balance"
-                  value={formData.balance}
+                  name="amount"
+                  value={formData.amount}
                   onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="modal-actions">
                 <button type="submit" className="save-button">
-                  Update
+                  Save
                 </button>
                 <button
                   type="button"
@@ -428,14 +479,13 @@ const Customers = () => {
                   onClick={() => {
                     setIsEditModalOpen(false);
                     setFormData({
-                      name: "",
-                      address: "",
-                      city: "",
-                      state: "",
-                      gstin: "",
-                      statecode: "",
-                      op_balance: 0,
-                      balance: 0
+                      voucherNum: "",
+                      voucherDate: new Date().toISOString().split("T")[0],
+                      partyCompany: "",
+                      paymentMode: "NA",
+                      bank: "",
+                      chequeNum: "",
+                      amount: 0,
                     });
                   }}
                 >
@@ -455,4 +505,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default PurchaseVoucher;
