@@ -96,6 +96,7 @@ const Customers = () => {
       balance: 0
     });
     setIsAddModalOpen(false);
+    await getCustomer();
   };
 
   const handleEdit = (customer) => {
@@ -132,12 +133,14 @@ const Customers = () => {
       balance: 0
     });
     setIsEditModalOpen(false);
+    await getCustomer();
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
       const response = await axios.delete(`${url}/customer/delete/${id}`);
+      await getCustomer();
     }
   };
 

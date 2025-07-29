@@ -124,6 +124,7 @@ const PurchaseVoucher = () => {
       amount: 0,
     });
     setIsAddModalOpen(false);
+    await getVoucher();
   };
 
   const handleEdit = (customer) => {
@@ -159,6 +160,7 @@ const PurchaseVoucher = () => {
       amount: 0,
     });
     setIsEditModalOpen(false);
+    await getVoucher();
   };
 
   const handleDelete = async (id) => {
@@ -166,6 +168,7 @@ const PurchaseVoucher = () => {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
       const response = await axios.delete(`${url}/purchase-voucher/delete/${id}`);
     }
+    await getVoucher();
   };
 
   const handleItem = (name) => {

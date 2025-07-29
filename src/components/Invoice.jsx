@@ -180,6 +180,7 @@ const Invoice = () => {
       items: [],
     });
     setIsAddModalOpen(false);
+    await getInvoice();
     navigate(`/print`, {
       state: {
         companyName: newCustomer.toCompany,
@@ -249,6 +250,7 @@ const Invoice = () => {
       items: [],
     });
     setIsEditModalOpen(false);
+    await getInvoice();
   };
 
   const handleDelete = async (id) => {
@@ -258,6 +260,7 @@ const Invoice = () => {
         `${url}/invoice/delete/${id}`
       );
     }
+    await getInvoice();
   };
 
   const handleClick = (newCustomer) => {

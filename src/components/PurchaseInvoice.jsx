@@ -147,6 +147,7 @@ const  PurchaseInvoice = () => {
       items: [],
     });
     setIsAddModalOpen(false);
+    await getInvoice();
   };
 
   const handleEdit = (customer) => {
@@ -184,6 +185,7 @@ const  PurchaseInvoice = () => {
       items: [],
     });
     setIsEditModalOpen(false);
+    await getInvoice();
   };
 
   const handleDelete = async (id) => {
@@ -193,6 +195,7 @@ const  PurchaseInvoice = () => {
         `${url}/purchase-invoice/delete/${id}`
       );
     }
+    await getInvoice();
   };
 
   const handleClick = (newCustomer) => {

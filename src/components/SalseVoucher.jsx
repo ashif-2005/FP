@@ -124,7 +124,7 @@ const SalseVoucher = () => {
       amount: 0,
     });
     setIsAddModalOpen(false);
-    window.location.reload();
+    await getVoucher();
   };
 
   const handleEdit = (customer) => {
@@ -160,6 +160,7 @@ const SalseVoucher = () => {
       amount: 0,
     });
     setIsEditModalOpen(false);
+    await getVoucher();
   };
 
   const handleDelete = async (id) => {
@@ -167,6 +168,7 @@ const SalseVoucher = () => {
       setCustomers((prev) => prev.filter((customer) => customer._id !== id));
       const response = await axios.delete(`${url}/voucher/delete/${id}`);
     }
+    await getVoucher();
   };
 
   const handleItem = (name) => {
