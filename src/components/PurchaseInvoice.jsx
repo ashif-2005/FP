@@ -305,7 +305,7 @@ const  PurchaseInvoice = () => {
             className="add-button"
             onClick={() => {
               setFormData({
-                invoiceNumber: ivnlen + 1,
+                invoiceNumber: "",
                 invoiceDate: new Date().toISOString().split("T")[0],
                 toCompany: "",
                 gstNumber: "",
